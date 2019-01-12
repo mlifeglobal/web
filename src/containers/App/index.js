@@ -10,6 +10,8 @@ import theme from "utils/theme";
 
 import Header from "components/Header";
 import Login from "containers/Login";
+import SignUp from "containers/SignUp";
+import ForgotPassword from "containers/ForgotPassword";
 
 class App extends Component {
   render() {
@@ -36,13 +38,13 @@ class App extends Component {
               exact
               auth={auth}
               path="/auth/signup"
-              component={() => <Heading>SignUp</Heading>}
+              component={SignUp}
             />
             <PublicRoute
               exact
               auth={auth}
               path="/auth/forgot"
-              component={() => <Heading>Forgot Password</Heading>}
+              component={ForgotPassword}
             />
 
             <PrivateRoute

@@ -19,7 +19,7 @@ export class Login extends Component {
   };
 
   render() {
-    const { loginError, isLoading } = this.props.auth;
+    const { loginError, loading } = this.props.auth;
     return (
       <Box
         gap="small"
@@ -48,7 +48,6 @@ export class Login extends Component {
             touched,
             errors,
             dirty,
-            isSubmitting,
             handleChange,
             handleBlur,
             handleSubmit
@@ -107,7 +106,7 @@ export class Login extends Component {
                 pad={{ left: "small", right: "xsmall" }}
               >
                 <Button
-                  disabled={isLoading}
+                  disabled={loading}
                   onClick={() => this.props.pushRoute("/auth/forgot")}
                 >
                   <Box
@@ -123,13 +122,13 @@ export class Login extends Component {
                 </Button>
                 <Box direction="row" justify="end" gap="small">
                   <Button
-                    disabled={isLoading}
+                    disabled={loading}
                     label="Sign Up"
                     onClick={() => this.props.pushRoute("/auth/signup")}
                   />
                   <Button
                     primary
-                    disabled={isLoading}
+                    disabled={!dirty || loading}
                     label="Log In"
                     onClick={handleSubmit}
                   />

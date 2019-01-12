@@ -1,5 +1,5 @@
 import { LOGIN_URL } from "containers/Login/state/constants";
-// import { SIGNUP_URL } from "containers/SignUp/constants";
+import { SIGNUP_URL } from "containers/SignUp/state/constants";
 import { LOGOUT } from "./constants";
 
 export const initialState = {
@@ -34,7 +34,7 @@ function authReducer(state = initialState, action) {
       };
 
     // Signup cases
-    /* case `${SIGNUP_URL}_SUBMIT`:
+    case `${SIGNUP_URL}_SUBMIT`:
       return {
         ...initialState,
         loading: true
@@ -48,7 +48,8 @@ function authReducer(state = initialState, action) {
       return {
         ...initialState,
         signUpError: errorMessage
-      }; */
+      };
+
     case LOGOUT:
       return initialState;
 
