@@ -12,6 +12,7 @@ import Header from "components/Header";
 import Login from "containers/Login";
 import SignUp from "containers/SignUp";
 import ForgotPassword from "containers/ForgotPassword";
+import Dashboard from "containers/Dashboard";
 
 class App extends Component {
   render() {
@@ -24,7 +25,7 @@ class App extends Component {
           meta={[{ name: "description", content: "Mlife Dashboard" }]}
         />
         <Box direction="column" fill background={{ color: "grey" }}>
-          <Header onClick={() => this.props.pushRoute("/")} />
+          <Header onClick={() => this.props.changeRoute("/")} />
           <Switch>
             <Route path="/filler" component={() => <Heading>Filler</Heading>} />
 
@@ -47,11 +48,7 @@ class App extends Component {
               component={ForgotPassword}
             />
 
-            <PrivateRoute
-              auth={auth}
-              path="/"
-              component={() => <Heading>Dashboard</Heading>}
-            />
+            <PrivateRoute auth={auth} path="/" component={Dashboard} />
 
             <Route component={() => <Heading>Not Found</Heading>} />
           </Switch>
@@ -69,7 +66,7 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    pushRoute: route => dispatch(push(route))
+    changeRoute: route => dispatch(push(route))
   };
 }
 

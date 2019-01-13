@@ -107,7 +107,7 @@ export class Login extends Component {
               >
                 <Button
                   disabled={loading}
-                  onClick={() => this.props.pushRoute("/auth/forgot")}
+                  onClick={() => this.props.changeRoute("/auth/forgot")}
                 >
                   <Box
                     direction="row"
@@ -124,7 +124,7 @@ export class Login extends Component {
                   <Button
                     disabled={loading}
                     label="Sign Up"
-                    onClick={() => this.props.pushRoute("/auth/signup")}
+                    onClick={() => this.props.changeRoute("/auth/signup")}
                   />
                   <Button
                     primary
@@ -136,7 +136,7 @@ export class Login extends Component {
               </Box>
               <Button
                 label="Go to Survey Filler"
-                onClick={() => this.props.pushRoute("/filler")}
+                onClick={() => this.props.changeRoute("/filler")}
               />
               <Box
                 direction="column"
@@ -158,7 +158,7 @@ export class Login extends Component {
 Login.propTypes = {
   auth: PropTypes.object.isRequired,
   loginSubmit: PropTypes.func.isRequired,
-  pushRoute: PropTypes.func.isRequired
+  changeRoute: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
@@ -169,7 +169,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     loginSubmit: payload => dispatch(loginSubmit(payload)),
-    pushRoute: route => dispatch(push(route))
+    changeRoute: route => dispatch(push(route))
   };
 }
 

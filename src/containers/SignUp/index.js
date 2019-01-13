@@ -179,7 +179,7 @@ export class SignUp extends React.PureComponent {
                 <Button
                   disabled={loading}
                   label="Log In"
-                  onClick={() => this.props.pushRoute("/auth/login")}
+                  onClick={() => this.props.changeRoute("/auth/login")}
                 />
                 <Button
                   primary
@@ -208,7 +208,7 @@ export class SignUp extends React.PureComponent {
 SignUp.propTypes = {
   auth: PropTypes.object.isRequired,
   signUpSubmit: PropTypes.func.isRequired,
-  pushRoute: PropTypes.func.isRequired
+  changeRoute: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
@@ -220,7 +220,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     signUpSubmit: payload => dispatch(signUpSubmit(payload)),
-    pushRoute: route => dispatch(push(route))
+    changeRoute: route => dispatch(push(route))
   };
 }
 

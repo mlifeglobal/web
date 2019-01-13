@@ -13,6 +13,7 @@ import {
   resetPasswordWatcher,
   resetSucceedWatcher
 } from "containers/ForgotPassword/state/sagas";
+import { fetchHomeDataWatcher } from "containers/Home/state/sagas";
 
 export default sagaMiddleware => {
   sagaMiddleware.run(requestApiWatcher);
@@ -29,4 +30,7 @@ export default sagaMiddleware => {
   sagaMiddleware.run(requestPasswordWatcher);
   sagaMiddleware.run(resetPasswordWatcher);
   sagaMiddleware.run(resetSucceedWatcher);
+
+  // Home
+  sagaMiddleware.run(fetchHomeDataWatcher);
 };

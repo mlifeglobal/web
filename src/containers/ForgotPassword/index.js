@@ -240,7 +240,7 @@ export class ForgotPassword extends React.PureComponent {
 
         <Button
           label="Back to log in"
-          onClick={() => this.props.pushRoute("/auth/login")}
+          onClick={() => this.props.changeRoute("/auth/login")}
         />
       </Box>
     );
@@ -249,7 +249,7 @@ export class ForgotPassword extends React.PureComponent {
 
 ForgotPassword.propTypes = {
   forgotPassword: PropTypes.object.isRequired,
-  pushRoute: PropTypes.func.isRequired,
+  changeRoute: PropTypes.func.isRequired,
   requestPassword: PropTypes.func.isRequired,
   resetPassword: PropTypes.func.isRequired
 };
@@ -261,7 +261,7 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    pushRoute: route => dispatch(push(route)),
+    changeRoute: route => dispatch(push(route)),
     requestPassword: payload => dispatch(requestPassword(payload)),
     resetPassword: payload => dispatch(resetPassword(payload))
   };
