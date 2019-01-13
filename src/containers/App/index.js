@@ -13,6 +13,7 @@ import Login from "containers/Login";
 import SignUp from "containers/SignUp";
 import ForgotPassword from "containers/ForgotPassword";
 import Dashboard from "containers/Dashboard";
+import Filler from "containers/Filler";
 
 class App extends Component {
   render() {
@@ -27,7 +28,7 @@ class App extends Component {
         <Box direction="column" fill background={{ color: "grey" }}>
           <Header onClick={() => this.props.changeRoute("/")} />
           <Switch>
-            <Route path="/filler" component={() => <Heading>Filler</Heading>} />
+            <Route path="/filler" component={Filler} />
 
             <PublicRoute
               exact

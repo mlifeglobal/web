@@ -22,9 +22,10 @@ export default () => {
 
   store.subscribe(
     throttle(() => {
-      const { auth } = store.getState();
+      const { auth, filler } = store.getState();
       saveState({
-        auth: { data: auth.data }
+        auth: { data: auth.data },
+        filler: { data: filler.data, survey: filler.survey }
       });
     }, 1000)
   );

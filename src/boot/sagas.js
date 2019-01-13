@@ -14,6 +14,14 @@ import {
   resetSucceedWatcher
 } from "containers/ForgotPassword/state/sagas";
 import { fetchHomeDataWatcher } from "containers/Home/state/sagas";
+import {
+  authFillerWatcher,
+  authFillerSucceedWatcher,
+  optInSubmitWatcher,
+  optInSucceedWatcher,
+  startSurveyWatcher,
+  saveAnswerWatcher
+} from "containers/Filler/state/sagas";
 
 export default sagaMiddleware => {
   sagaMiddleware.run(requestApiWatcher);
@@ -33,4 +41,12 @@ export default sagaMiddleware => {
 
   // Home
   sagaMiddleware.run(fetchHomeDataWatcher);
+
+  // Filler
+  sagaMiddleware.run(authFillerWatcher);
+  sagaMiddleware.run(authFillerSucceedWatcher);
+  sagaMiddleware.run(optInSubmitWatcher);
+  sagaMiddleware.run(optInSucceedWatcher);
+  sagaMiddleware.run(startSurveyWatcher);
+  sagaMiddleware.run(saveAnswerWatcher);
 };

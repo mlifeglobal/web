@@ -3,13 +3,12 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Helmet } from "react-helmet";
 import { Route } from "react-router-dom";
+import ConnectedSwitch from "components/ConnectedSwitch";
 
 import { push } from "connected-react-router";
 import { Box } from "grommet";
 
 import Sidebar from "components/Sidebar";
-import ConnectedSwitch from "components/ConnectedSwitch";
-
 import Home from "containers/Home";
 // import Surveys from "containers/SurveyList/Loadable";
 // import SurveyEdit from "containers/SurveyEdit/Loadable";
