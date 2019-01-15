@@ -22,7 +22,6 @@ import {
   startSurveyWatcher,
   saveAnswerWatcher
 } from "containers/Filler/state/sagas";
-
 import {
   fetchSurveysWatcher,
   createSurveyWatcher
@@ -55,7 +54,7 @@ export default sagaMiddleware => {
   sagaMiddleware.run(startSurveyWatcher);
   sagaMiddleware.run(saveAnswerWatcher);
 
-  // Survets
+  // Surveys
   sagaMiddleware.run(fetchSurveysWatcher);
   sagaMiddleware.run(createSurveyWatcher);
 };

@@ -1,13 +1,6 @@
-/*
- *
- * Surveys reducer
- *
- */
-
-import { fromJS } from "immutable";
 import { SURVEYS_URL, SURVEY_CREATE } from "./constants";
 
-export const initialState = fromJS({});
+export const initialState = {};
 
 function surveysReducer(state = initialState, action) {
   switch (action.type) {

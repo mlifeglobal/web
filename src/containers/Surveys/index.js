@@ -1,8 +1,3 @@
-/**
- *
- * Survey List
- *
- */
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -10,7 +5,6 @@ import Pagination from "react-js-pagination";
 import { Helmet } from "react-helmet";
 
 import { Add } from "grommet-icons";
-import { compose } from "redux";
 import { push } from "connected-react-router/immutable";
 import { Box, Grid, Button, Text, Grommet, Anchor } from "grommet";
 
