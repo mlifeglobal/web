@@ -8,7 +8,7 @@ import { Add } from "grommet-icons";
 import { push } from "connected-react-router/immutable";
 import { Box, Grid, Button, Text, Grommet, Anchor } from "grommet";
 
-import { fetchSurveys, editSurvey, createSurvey } from "./state/actions";
+import { fetchSurveys, editSurvey, createSurvey } from "../../state/actions";
 import SurveyNew from "./SurveyNewModal";
 import "./main.css";
 
@@ -190,7 +190,7 @@ SurveyList.propTypes = {
 };
 
 function mapStateToProps(state) {
-  console.log(state, 'here')
+  console.log(state, "here");
   return {
     surveysReducer: state.surveys
   };

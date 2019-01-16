@@ -10,7 +10,7 @@ import { Box } from "grommet";
 
 import Sidebar from "components/Sidebar";
 import Home from "containers/Home";
-import Surveys from "containers/Surveys";
+import Surveys from "containers/Surveys/pages/SurveyList";
 // import SurveyEdit from "containers/SurveyEdit/Loadable";
 import DataPoints from "containers/DataPoints";
 

@@ -1,6 +1,11 @@
 import { SURVEYS_URL, SURVEY_CREATE } from "./constants";
 
-export const initialState = {};
+export const initialState = {
+  data: {
+    surveys: [],
+    surveysCount: 0
+  }
+};
 
 function surveysReducer(state = initialState, action) {
   switch (action.type) {
@@ -9,9 +14,8 @@ function surveysReducer(state = initialState, action) {
     case `${SURVEYS_URL}_SUCCEED`:
       return {
         ...state,
-        loading: false,
-        data: action.payload.surveys || [],
-        surveysCount: action.payload.surveysCount
+        data: action.payload,
+        loading: false
       };
     case `${SURVEY_CREATE}_SUCCEED`:
       return { ...state, loading: false, data: action.payload.surveys || [] };
