@@ -1,3 +1,10 @@
 export const SURVEYS_URL = "user/survey-get-all";
 export const SURVEY_CREATE = "user/survey-create";
 export const EDIT_SURVEY = "edit-survey";
+export const TOGGLE_STATE = "/user/survey-change-state";
+export const UPDATE_DETAILS = "/user/survey-update-details";
+export const UPDATE_PLATFORMS = "/user/survey-update-publish";
+export const FETCH_QUESTIONS = "/user/survey-get-questions";
+export const DELETE_QUESTION = "user/survey-delete-question";
+export const ADD_QUESTION = "user/survey-add-question";
+export const UPLOAD_ATTACHMENT = "upload-attachment";

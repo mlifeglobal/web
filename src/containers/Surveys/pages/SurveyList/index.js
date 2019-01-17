@@ -190,7 +190,6 @@ SurveyList.propTypes = {
 };
 
 function mapStateToProps(state) {
-  console.log(state, "here");
   return {
     surveysReducer: state.surveys
   };

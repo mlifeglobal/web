@@ -11,6 +11,8 @@ import { Box } from "grommet";
 import Sidebar from "components/Sidebar";
 import Home from "containers/Home";
 import Surveys from "containers/Surveys/pages/SurveyList";
+import SurveyEdit from "containers/Surveys/pages/SurveyEdit";
+
 // import SurveyEdit from "containers/SurveyEdit/Loadable";
 import DataPoints from "containers/DataPoints";
 
@@ -82,7 +84,7 @@ export class Dashboard extends React.PureComponent {
         <ConnectedSwitch>
           <Route exact path="/" component={Home} />
           <Route exact path="/surveys" component={Surveys} />
-          <Route exact path="/surveys/edit" component={Home} />
+          <Route exact path="/surveys/edit" component={SurveyEdit} />
           <Route exact path="/data" component={DataPoints} />
         </ConnectedSwitch>
       </Box>
