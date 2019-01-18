@@ -67,10 +67,18 @@ export class SurveyEdit extends React.PureComponent {
     }
   };
 
-  onOpen = () => this.setState({ open: true });
+  onOpen = () =>
+    this.setState({
+      open: true
+    });
 
   onClose = () => {
-    this.setState({ open: undefined });
+    this.setState({
+      open: false,
+      select: "",
+      questionType: "open",
+      predefAnswers: []
+    });
   };
 
   notificationClose = () => this.setState({ notification: undefined });
@@ -109,7 +117,8 @@ export class SurveyEdit extends React.PureComponent {
       }
       this.props.uploadAttachment(data);
     }
-    this.setState({ open: undefined });
+    console.log("submitAddquestion");
+    this.setState({ open: false });
   };
   onActive = index => this.setState({ index });
 
@@ -455,6 +464,7 @@ export class SurveyEdit extends React.PureComponent {
       { label: "Open question", value: "open" },
       { label: "File", value: "file" }
     ];
+    console.log("open", open);
     let addOptionButton = "";
     let uploadFileButton = "";
     if (questionType === "mcq") {
@@ -515,12 +525,12 @@ export class SurveyEdit extends React.PureComponent {
                 onEsc={this.onClose}
               >
                 <Box
-                  as="form"
+                  // as="form"
                   fill="vertical"
                   overflow="auto"
                   width="medium"
                   pad="medium"
-                  onSubmit={this.onClose}
+                  // onSubmit={this.onClose}
                 >
                   <Box flex={false} direction="row" justify="between">
                     <Heading level={2} margin="none">
