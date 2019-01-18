@@ -24,9 +24,7 @@ import {
 } from "containers/Filler/state/sagas";
 import {
   fetchSurveysWatcher,
-  createSurveyWatcher
-} from "containers/Surveys/state/sagas";
-import {
+  createSurveyWatcher,
   toggleStateWatcher,
   updateDetailsWatcher,
   fetchQuestonsWatcher,
@@ -34,7 +32,7 @@ import {
   deleteQuestionWatcher,
   addQuestionWatcher,
   uploadAttachmentWatcher
-} from "containers/SurveyEdit/state/sagas";
+} from "containers/Surveys/state/sagas";
 
 export default sagaMiddleware => {
   sagaMiddleware.run(requestApiWatcher);
