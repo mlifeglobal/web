@@ -10,7 +10,8 @@ import {
   UPDATE_PLATFORMS,
   DELETE_QUESTION,
   ADD_QUESTION,
-  UPLOAD_ATTACHMENT
+  UPLOAD_ATTACHMENT,
+  UPDATE_QUESTION
 } from "./constants";
 
 export function* fetchSurveys(data) {
@@ -84,6 +85,16 @@ export function* addQuestion(data) {
 
 export function* addQuestionWatcher() {
   yield takeLatest(`${ADD_QUESTION}_SUBMIT`, ({ data }) => addQuestion(data));
+}
+
+export function* updateQuestion(data) {
+  yield put(requestApi(UPDATE_QUESTION, { data }));
+}
+
+export function* updateQuestionWatcher() {
+  yield takeLatest(`${UPDATE_QUESTION}_SUBMIT`, ({ data }) =>
+    updateQuestion(data)
+  );
 }
 
 export function* uploadAttachment(data) {

@@ -9,7 +9,8 @@ import {
   UPDATE_PLATFORMS,
   DELETE_QUESTION,
   ADD_QUESTION,
-  UPLOAD_ATTACHMENT
+  UPLOAD_ATTACHMENT,
+  UPDATE_QUESTION
 } from "./constants";
 
 export function fetchSurveys(data) {
@@ -63,6 +64,13 @@ export function deleteQuestion(data) {
 export function addQuestion(data) {
   return {
     type: `${ADD_QUESTION}_SUBMIT`,
+    data
+  };
+}
+
+export function updateQuestion(data) {
+  return {
+    type: `${UPDATE_QUESTION}_SUBMIT`,
     data
   };
 }

@@ -5,7 +5,8 @@ import {
   TOGGLE_STATE,
   UPDATE_DETAILS,
   FETCH_QUESTIONS,
-  ADD_QUESTION
+  ADD_QUESTION,
+  UPDATE_QUESTION
 } from "./constants";
 
 export const initialState = {
@@ -56,6 +57,13 @@ function surveysReducer(state = initialState, action) {
       return { ...state, loading: false, questions: action.payload.questions };
     case `${ADD_QUESTION}_SUCCEED`:
       return { ...state, loading: false, questions: action.payload.questions };
+    case `${UPDATE_QUESTION}_SUCCEED`:
+      return {
+        ...state,
+        loading: false,
+        questions: action.payload.questions,
+        message: action.payload.message
+      };
 
     default:
       return state;

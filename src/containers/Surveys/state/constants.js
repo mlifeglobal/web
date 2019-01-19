@@ -7,4 +7,5 @@ export const UPDATE_PLATFORMS = "/user/survey-update-publish";
 export const FETCH_QUESTIONS = "/user/survey-get-questions";
 export const DELETE_QUESTION = "user/survey-delete-question";
 export const ADD_QUESTION = "user/survey-add-question";
+export const UPDATE_QUESTION = "user/survey-update-question";
 export const UPLOAD_ATTACHMENT = "upload-attachment";

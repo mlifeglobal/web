@@ -27,7 +27,8 @@ import {
   FormField,
   Heading,
   Layer,
-  CheckBox
+  CheckBox,
+  Anchor
 } from "grommet";
 
 import {
@@ -37,7 +38,8 @@ import {
   updatePlatforms,
   deleteQuestion,
   addQuestion,
-  uploadAttachment
+  uploadAttachment,
+  updateQuestion
 } from "../../state/actions";
 
 /* eslint-disable react/prefer-stateless-function */
@@ -52,6 +54,8 @@ export class SurveyEdit extends React.PureComponent {
       checkboxes: ["Facebook", "SMS", "WhatsApp"],
       predefAnswers: [],
       file: undefined,
+      editQuestion: undefined,
+      currentQuestion: undefined,
       notification: undefined
     };
   }
@@ -120,9 +124,38 @@ export class SurveyEdit extends React.PureComponent {
     console.log("submitAddquestion");
     this.setState({ open: false });
   };
+
+  submitEditQuestion = () => {
+    const predefAnswers = this.state.predefAnswers.slice();
+    const { question, select, file, questionId } = this.state;
+    if (select.value !== "file") {
+      const data = {
+        questionId,
+        question,
+        surveyId: this.props.currentSurvey.id,
+        questionType: select.value,
+        predefAnswers
+      };
+
+      this.props.updateQuestion(data);
+    } else {
+      let data = new FormData();
+      // data.append("file", file);
+      // data.append("text", question);
+      // data.append("surveyId", this.props.currentSurvey.id);
+      // console.log("data1", data);
+      // for (var pair of data.entries()) {
+      //   console.log(pair[0] + ", " + pair[1]);
+      // }
+      // this.props.uploadAttachment(data);
+    }
+    // console.log("submitAddquestion");
+    this.setState({ editQuestion: false, notification: true });
+  };
   onActive = index => this.setState({ index });
 
   onChangeAnswer = ({ target }) => {
+    console.log(this.state.predefAnswers, "predef");
     const predefAnswers = this.state.predefAnswers.slice();
     predefAnswers[target.id] = target.value;
     this.setState({ predefAnswers });
@@ -143,6 +176,37 @@ export class SurveyEdit extends React.PureComponent {
     this.props.toggleState(data);
     this.setState({ notification: true });
   }
+
+  editQuestion = question => {
+    const options = {
+      mcq: "Multiple Choice",
+      open: "Open question",
+      file: "File"
+    };
+
+    this.setState({
+      editQuestion: true,
+      question: question.question,
+      select: { label: options[question.type], value: question.type },
+      questionType: question.type,
+      questionId: question.id
+    });
+    if (question.answers) {
+      this.setState({ predefAnswers: Object.values(question.answers) });
+    }
+
+    console.log(this.state, "state");
+  };
+
+  editClose = () => {
+    this.setState({
+      editQuestion: undefined,
+      question: undefined,
+      select: "",
+      predefAnswers: [],
+      questionType: "open"
+    });
+  };
 
   submitChangeDetails = values => {
     if (this.props.currentSurvey.state === "in_progress") {
@@ -246,7 +310,14 @@ export class SurveyEdit extends React.PureComponent {
         elevation="small"
         background={{ color: "white" }}
       >
-        {this.renderQuestion(question)}
+        <Anchor
+          key={question.id}
+          onClick={() => {
+            this.editQuestion(question);
+          }}
+        >
+          {this.renderQuestion(question)}
+        </Anchor>
       </Box>
     ));
   }
@@ -457,14 +528,16 @@ export class SurveyEdit extends React.PureComponent {
       select,
       predefAnswers,
       questionType,
-      notification
+      notification,
+      editQuestion,
+      question
     } = this.state;
     const options = [
       { label: "Multiple Choice", value: "mcq" },
       { label: "Open question", value: "open" },
       { label: "File", value: "file" }
     ];
-    console.log("open", open);
+
     let addOptionButton = "";
     let uploadFileButton = "";
     if (questionType === "mcq") {
@@ -504,7 +577,6 @@ export class SurveyEdit extends React.PureComponent {
               </Box>
             </Box>
             {this.renderSurveyDetails()}
-            {notification && this.showNotification()}
           </Tab>
           <Tab title="Question">
             <Box justify="center" align="end" margin="medium">
@@ -564,6 +636,66 @@ export class SurveyEdit extends React.PureComponent {
                       type="submit"
                       label="Submit"
                       onClick={this.submitAddQuestion}
+                      primary
+                    />
+                  </Box>
+                </Box>
+              </Layer>
+            )}
+
+            {editQuestion && (
+              <Layer
+                position="center"
+                modal
+                onClickOutside={this.editClose}
+                onEsc={this.editClose}
+              >
+                <Box
+                  fill="vertical"
+                  overflow="auto"
+                  width="medium"
+                  pad="medium"
+                >
+                  <Box flex={false} direction="row" justify="between">
+                    <Heading level={2} margin="none">
+                      Edit question
+                    </Heading>
+                    <Button icon={<Close />} onClick={this.editClose} />
+                  </Box>
+                  <Box flex="grow" overflow="auto" pad={{ vertical: "medium" }}>
+                    <FormField label="Question">
+                      <TextInput
+                        id="editQuestion"
+                        onChange={this.setQuestion}
+                        value={question}
+                      />
+                    </FormField>
+                    <FormField label="Select type">
+                      <Select
+                        id="editSelect"
+                        options={options}
+                        value={select}
+                        onChange={option => this.onSelect(option)}
+                      />
+                    </FormField>
+                    {predefAnswers.map((item, index) => (
+                      <FormField label={`Option ${index}`}>
+                        <TextInput
+                          id={index}
+                          onChange={this.onChangeAnswer}
+                          value={item}
+                        />
+                      </FormField>
+                    ))}
+
+                    {addOptionButton}
+                    {uploadFileButton}
+                  </Box>
+                  <Box flex={false} as="footer" align="start">
+                    <Button
+                      type="submit"
+                      label="Submit"
+                      onClick={this.submitEditQuestion}
                       primary
                     />
                   </Box>
@@ -646,6 +778,7 @@ export class SurveyEdit extends React.PureComponent {
             </Formik>
           </Tab>
         </Tabs>
+        {notification && this.showNotification()}
       </Box>
     );
   }
@@ -659,7 +792,8 @@ SurveyEdit.propTypes = {
   updatePlatforms: PropTypes.func.isRequired,
   deleteQuestion: PropTypes.func.isRequired,
   addQuestion: PropTypes.func.isRequired,
-  uploadAttachment: PropTypes.func.isRequired
+  uploadAttachment: PropTypes.func.isRequired,
+  updateQuestion: PropTypes.func.isRequired
 };
 function mapStateToProps(state) {
   console.log(state, "here");
@@ -678,7 +812,8 @@ function mapDispatchToProps(dispatch) {
     updatePlatforms: data => dispatch(updatePlatforms(data)),
     deleteQuestion: data => dispatch(deleteQuestion(data)),
     addQuestion: data => dispatch(addQuestion(data)),
-    uploadAttachment: data => dispatch(uploadAttachment(data))
+    uploadAttachment: data => dispatch(uploadAttachment(data)),
+    updateQuestion: data => dispatch(updateQuestion(data))
   };
 }
 

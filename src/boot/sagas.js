@@ -24,17 +24,16 @@ import {
 } from "containers/Filler/state/sagas";
 import {
   fetchSurveysWatcher,
-  createSurveyWatcher
-} from "containers/Surveys/state/sagas";
-import {
+  createSurveyWatcher,
   toggleStateWatcher,
   updateDetailsWatcher,
   fetchQuestonsWatcher,
   updatePlatformsWatcher,
   deleteQuestionWatcher,
   addQuestionWatcher,
-  uploadAttachmentWatcher
-} from "containers/SurveyEdit/state/sagas";
+  uploadAttachmentWatcher,
+  updateQuestionWatcher
+} from "containers/Surveys/state/sagas";
 
 export default sagaMiddleware => {
   sagaMiddleware.run(requestApiWatcher);
@@ -75,4 +74,5 @@ export default sagaMiddleware => {
   sagaMiddleware.run(deleteQuestionWatcher);
   sagaMiddleware.run(addQuestionWatcher);
   sagaMiddleware.run(uploadAttachmentWatcher);
+  sagaMiddleware.run(updateQuestionWatcher);
 };
