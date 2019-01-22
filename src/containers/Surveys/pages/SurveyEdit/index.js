@@ -12,7 +12,7 @@ import { Add, Close, Trash, StatusGood, FormClose } from "grommet-icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
-
+import MyDiagram from "./MyDiagram";
 import StyledForm from "components/StyledForm";
 import FormErrorText from "components/FormErrorText";
 import {
@@ -39,7 +39,8 @@ import {
   deleteQuestion,
   addQuestion,
   uploadAttachment,
-  updateQuestion
+  updateQuestion,
+  getBranchingData
 } from "../../state/actions";
 
 /* eslint-disable react/prefer-stateless-function */
@@ -56,7 +57,8 @@ export class SurveyEdit extends React.PureComponent {
       file: undefined,
       editQuestion: undefined,
       currentQuestion: undefined,
-      notification: undefined
+      notification: undefined,
+      showBranch: undefined
     };
   }
 
@@ -157,7 +159,7 @@ export class SurveyEdit extends React.PureComponent {
   onChangeAnswer = ({ target }) => {
     console.log(this.state.predefAnswers, "predef");
     const predefAnswers = this.state.predefAnswers.slice();
-    predefAnswers[target.id] = target.value;
+    predefAnswers[target.id] = { value: target.value };
     this.setState({ predefAnswers });
   };
   handleFileUpload = ({ target }) => {
@@ -208,6 +210,22 @@ export class SurveyEdit extends React.PureComponent {
     });
   };
 
+  showBranch = () => {
+    const data = { surveyId: this.props.currentSurvey.id };
+
+    this.props.getBranchingData(data);
+
+    this.setState({ showBranch: true });
+  };
+
+  closeBranch = () => {
+    this.setState({ showBranch: undefined, branchData: undefined });
+  };
+
+  renderBranchingView = () => {
+    if (this.props.branchData)
+      return <MyDiagram data={this.props.branchData} />;
+  };
   submitChangeDetails = values => {
     if (this.props.currentSurvey.state === "in_progress") {
       alert("You have to unpublish survey first to make changes");
@@ -234,8 +252,6 @@ export class SurveyEdit extends React.PureComponent {
     if (values.initCodes === this.props.currentSurvey.initCodes) {
       delete data.initCodes;
     }
-
-    console.log(values);
 
     this.props.updatePlatforms(values);
   };
@@ -291,7 +307,7 @@ export class SurveyEdit extends React.PureComponent {
           </Text>
           {Object.keys(question.answers).map(key => (
             <Text>
-              {key}: {question.answers[key]}
+              {key}: {question.answers[key].value}
             </Text>
           ))}
         </Box>
@@ -530,7 +546,8 @@ export class SurveyEdit extends React.PureComponent {
       questionType,
       notification,
       editQuestion,
-      question
+      question,
+      showBranch
     } = this.state;
     const options = [
       { label: "Multiple Choice", value: "mcq" },
@@ -574,6 +591,23 @@ export class SurveyEdit extends React.PureComponent {
               </Box>
               <Box justify="center" align="end">
                 {this.renderPublishButton()}
+                <Button
+                  onClick={() => {
+                    this.showBranch();
+                  }}
+                  label="Branching view"
+                />
+                {showBranch && (
+                  <Layer
+                    position="center"
+                    full
+                    modal
+                    onClickOutside={this.closeBranch}
+                    onEsc={this.closeBranch}
+                  >
+                    {this.renderBranchingView()}
+                  </Layer>
+                )}
               </Box>
             </Box>
             {this.renderSurveyDetails()}
@@ -793,14 +827,16 @@ SurveyEdit.propTypes = {
   deleteQuestion: PropTypes.func.isRequired,
   addQuestion: PropTypes.func.isRequired,
   uploadAttachment: PropTypes.func.isRequired,
-  updateQuestion: PropTypes.func.isRequired
+  updateQuestion: PropTypes.func.isRequired,
+  getBranchingData: PropTypes.func.isRequired
 };
 function mapStateToProps(state) {
   console.log(state, "here");
   return {
     currentSurvey: state.surveys.currentSurvey,
     questions: state.surveys.questions,
-    message: state.surveys.message
+    message: state.surveys.message,
+    branchData: state.surveys.branchData
   };
 }
 
@@ -813,7 +849,8 @@ function mapDispatchToProps(dispatch) {
     deleteQuestion: data => dispatch(deleteQuestion(data)),
     addQuestion: data => dispatch(addQuestion(data)),
     uploadAttachment: data => dispatch(uploadAttachment(data)),
-    updateQuestion: data => dispatch(updateQuestion(data))
+    updateQuestion: data => dispatch(updateQuestion(data)),
+    getBranchingData: data => dispatch(getBranchingData(data))
   };
 }
 

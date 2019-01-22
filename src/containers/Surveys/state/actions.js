@@ -10,7 +10,8 @@ import {
   DELETE_QUESTION,
   ADD_QUESTION,
   UPLOAD_ATTACHMENT,
-  UPDATE_QUESTION
+  UPDATE_QUESTION,
+  GET_BRANCHING_DATA
 } from "./constants";
 
 export function fetchSurveys(data) {
@@ -64,6 +65,13 @@ export function deleteQuestion(data) {
 export function addQuestion(data) {
   return {
     type: `${ADD_QUESTION}_SUBMIT`,
+    data
+  };
+}
+
+export function getBranchingData(data) {
+  return {
+    type: `${GET_BRANCHING_DATA}_SUBMIT`,
     data
   };
 }

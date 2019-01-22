@@ -32,7 +32,8 @@ import {
   deleteQuestionWatcher,
   addQuestionWatcher,
   uploadAttachmentWatcher,
-  updateQuestionWatcher
+  updateQuestionWatcher,
+  getBranchingDataWatcher
 } from "containers/Surveys/state/sagas";
 
 export default sagaMiddleware => {
@@ -75,4 +76,5 @@ export default sagaMiddleware => {
   sagaMiddleware.run(addQuestionWatcher);
   sagaMiddleware.run(uploadAttachmentWatcher);
   sagaMiddleware.run(updateQuestionWatcher);
+  sagaMiddleware.run(getBranchingDataWatcher);
 };
