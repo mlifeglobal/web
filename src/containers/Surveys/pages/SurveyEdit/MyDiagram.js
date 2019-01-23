@@ -36,19 +36,8 @@ class MyDiagram extends React.Component {
     this.setState({
       ...this.state,
       model: {
-        nodeDataArray: [
-          { key: "Alpha", label: "Alpha", color: "lightblue" },
-          { key: "Beta", label: "Beta", color: "orange" },
-          { key: "Gamma", label: "Gamma", color: "lightgreen" },
-          { key: "Delta", label: "Delta", color: "pink" },
-          { key: "Omega", label: "Omega", color: "grey" }
-        ],
-        linkDataArray: [
-          { from: "Alpha", to: "Beta" },
-          { from: "Alpha", to: "Gamma" },
-          { from: "Beta", to: "Delta" },
-          { from: "Gamma", to: "Omega" }
-        ]
+        nodeDataArray: [],
+        linkDataArray: []
       }
     });
   }
@@ -62,14 +51,14 @@ class MyDiagram extends React.Component {
         arrangement: go.TreeLayout.ArrangementVertical,
         treeStyle: go.TreeLayout.StyleLayered
       }),
-      isReadOnly: false,
+      isReadOnly: true,
       allowHorizontalScroll: true,
       allowVerticalScroll: true,
-      allowZoom: false,
-      allowSelect: true,
+      allowZoom: true,
+      allowSelect: false,
       autoScale: Diagram.Uniform,
-      contentAlignment: go.Spot.LeftCenter,
-      TextEdited: this.onTextEdited
+      contentAlignment: go.Spot.LeftCenter
+      //   TextEdited: this.onTextEdited
     });
 
     myDiagram.toolManager.panningTool.isEnabled = false;
