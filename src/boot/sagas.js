@@ -32,7 +32,8 @@ import {
   deleteQuestionWatcher,
   addQuestionWatcher,
   uploadAttachmentWatcher,
-  updateQuestionWatcher
+  updateQuestionWatcher,
+  getBranchingDataWatcher
 } from "containers/Surveys/state/sagas";
 import { fetchDataWatcher } from "containers/DataPoints/state/sagas";
 
@@ -63,6 +64,9 @@ export default sagaMiddleware => {
   sagaMiddleware.run(startSurveyWatcher);
   sagaMiddleware.run(saveAnswerWatcher);
 
+  // DataPoints
+  sagaMiddleware.run(fetchDataWatcher);
+
   // Surveys
   sagaMiddleware.run(fetchSurveysWatcher);
   sagaMiddleware.run(createSurveyWatcher);
@@ -76,7 +80,5 @@ export default sagaMiddleware => {
   sagaMiddleware.run(addQuestionWatcher);
   sagaMiddleware.run(uploadAttachmentWatcher);
   sagaMiddleware.run(updateQuestionWatcher);
-
-  // DataPoints
-  sagaMiddleware.run(fetchDataWatcher);
+  sagaMiddleware.run(getBranchingDataWatcher);
 };

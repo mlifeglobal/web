@@ -9,3 +9,4 @@ export const DELETE_QUESTION = "user/survey-delete-question";
 export const ADD_QUESTION = "user/survey-add-question";
 export const UPDATE_QUESTION = "user/survey-update-question";
 export const UPLOAD_ATTACHMENT = "upload-attachment";
+export const GET_BRANCHING_DATA = "user/survey-get-branching-data";

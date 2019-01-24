@@ -12,7 +12,7 @@ import { Add, Close, Trash, StatusGood, FormClose } from "grommet-icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
-
+import MyDiagram from "./MyDiagram";
 import StyledForm from "components/StyledForm";
 import FormErrorText from "components/FormErrorText";
 import {
@@ -23,7 +23,6 @@ import {
   Text,
   TextInput,
   TextArea,
-  Grid,
   FormField,
   Heading,
   Layer,
@@ -39,7 +38,8 @@ import {
   deleteQuestion,
   addQuestion,
   uploadAttachment,
-  updateQuestion
+  updateQuestion,
+  getBranchingData
 } from "../../state/actions";
 
 /* eslint-disable react/prefer-stateless-function */
@@ -56,25 +56,32 @@ export class SurveyEdit extends React.PureComponent {
       file: undefined,
       editQuestion: undefined,
       currentQuestion: undefined,
-      notification: undefined
+      notification: undefined,
+      showBranch: undefined
     };
   }
 
   onCheck = ({ target }) => {
-    const { checked } = this.state;
+    let checked = this.state.checked.slice();
 
     if (target.checked && checked.indexOf(target.id) === -1) {
       checked.push(target.id);
+      console.log("oncheck", checked, target.id);
       this.setState({ checked });
     } else {
       this.setState({ checked: checked.filter(item => item !== target.id) });
     }
   };
 
-  onOpen = () =>
-    this.setState({
-      open: true
-    });
+  onOpen = () => {
+    if (this.props.currentSurvey.state === "in_progress") {
+      alert("You have to unpublish survey first to make changes");
+    } else {
+      this.setState({
+        open: true
+      });
+    }
+  };
 
   onClose = () => {
     this.setState({
@@ -121,8 +128,8 @@ export class SurveyEdit extends React.PureComponent {
       }
       this.props.uploadAttachment(data);
     }
-    console.log("submitAddquestion");
-    this.setState({ open: false });
+
+    this.setState({ open: false, notification: true });
   };
 
   submitEditQuestion = () => {
@@ -157,7 +164,7 @@ export class SurveyEdit extends React.PureComponent {
   onChangeAnswer = ({ target }) => {
     console.log(this.state.predefAnswers, "predef");
     const predefAnswers = this.state.predefAnswers.slice();
-    predefAnswers[target.id] = target.value;
+    predefAnswers[target.id] = { value: target.value };
     this.setState({ predefAnswers });
   };
   handleFileUpload = ({ target }) => {
@@ -178,24 +185,26 @@ export class SurveyEdit extends React.PureComponent {
   }
 
   editQuestion = question => {
-    const options = {
-      mcq: "Multiple Choice",
-      open: "Open question",
-      file: "File"
-    };
+    if (this.props.currentSurvey.state === "in_progress") {
+      alert("You have to unpublish survey first to make changes");
+    } else {
+      const options = {
+        mcq: "Multiple Choice",
+        open: "Open question",
+        file: "File"
+      };
 
-    this.setState({
-      editQuestion: true,
-      question: question.question,
-      select: { label: options[question.type], value: question.type },
-      questionType: question.type,
-      questionId: question.id
-    });
-    if (question.answers) {
-      this.setState({ predefAnswers: Object.values(question.answers) });
+      this.setState({
+        editQuestion: true,
+        question: question.question,
+        select: { label: options[question.type], value: question.type },
+        questionType: question.type,
+        questionId: question.id
+      });
+      if (question.answers) {
+        this.setState({ predefAnswers: Object.values(question.answers) });
+      }
     }
-
-    console.log(this.state, "state");
   };
 
   editClose = () => {
@@ -208,6 +217,22 @@ export class SurveyEdit extends React.PureComponent {
     });
   };
 
+  showBranch = () => {
+    const data = { surveyId: this.props.currentSurvey.id };
+
+    this.props.getBranchingData(data);
+
+    this.setState({ showBranch: true });
+  };
+
+  closeBranch = () => {
+    this.setState({ showBranch: undefined });
+  };
+
+  renderBranchingView = () => {
+    if (this.props.branchData)
+      return <MyDiagram data={this.props.branchData} />;
+  };
   submitChangeDetails = values => {
     if (this.props.currentSurvey.state === "in_progress") {
       alert("You have to unpublish survey first to make changes");
@@ -220,24 +245,40 @@ export class SurveyEdit extends React.PureComponent {
     }
   };
   submitPlatforms = values => {
-    const data = values;
-    data.surveyId = this.props.currentSurvey.id;
-    if (
-      JSON.stringify(this.state.checked) !==
-      JSON.stringify(this.props.currentSurvey.platforms)
-    ) {
-      data.platforms = this.state.checked;
-    }
-    if (values.optInCodes === this.props.currentSurvey.optInCodes) {
-      delete data.optInCodes;
-    }
-    if (values.initCodes === this.props.currentSurvey.initCodes) {
-      delete data.initCodes;
-    }
+    if (this.props.currentSurvey.state === "in_progress") {
+      alert("You have to unpublish survey first to make changes");
+    } else {
+      const data = values;
+      data.surveyId = this.props.currentSurvey.id;
+      if (
+        JSON.stringify(this.state.checked) !==
+        JSON.stringify(this.props.currentSurvey.platforms)
+      ) {
+        data.platforms = this.state.checked;
+      }
 
-    console.log(values);
+      if (
+        values.optInCodes &&
+        values.optInCodes
+          .split(",")
+          .sort()
+          .toString() === this.props.currentSurvey.optInCodes.sort().toString()
+      ) {
+        delete data.optInCodes;
+      }
+      if (
+        values.initCodes &&
+        values.initCodes
+          .split(",")
+          .sort()
+          .toString() === this.props.currentSurvey.initCodes.sort().toString()
+      ) {
+        delete data.initCodes;
+      }
 
-    this.props.updatePlatforms(values);
+      this.props.updatePlatforms(values);
+      this.setState({ notification: true });
+    }
   };
   renderPublishButton() {
     return (
@@ -291,7 +332,7 @@ export class SurveyEdit extends React.PureComponent {
           </Text>
           {Object.keys(question.answers).map(key => (
             <Text>
-              {key}: {question.answers[key]}
+              {key}: {question.answers[key].value}
             </Text>
           ))}
         </Box>
@@ -475,7 +516,7 @@ export class SurveyEdit extends React.PureComponent {
             <Box justify="center" align="center" margin={{ top: "small" }}>
               <Button
                 primary
-                disabled={!dirty || isSubmitting}
+                disabled={!dirty}
                 type="submit"
                 label="Submit"
                 onClick={handleSubmit}
@@ -530,14 +571,15 @@ export class SurveyEdit extends React.PureComponent {
       questionType,
       notification,
       editQuestion,
-      question
+      question,
+      showBranch
     } = this.state;
     const options = [
       { label: "Multiple Choice", value: "mcq" },
       { label: "Open question", value: "open" },
       { label: "File", value: "file" }
     ];
-
+    console.log("checked", checked);
     let addOptionButton = "";
     let uploadFileButton = "";
     if (questionType === "mcq") {
@@ -574,6 +616,26 @@ export class SurveyEdit extends React.PureComponent {
               </Box>
               <Box justify="center" align="end">
                 {this.renderPublishButton()}
+
+                {showBranch && (
+                  <Layer
+                    position="center"
+                    full
+                    modal
+                    onClickOutside={this.closeBranch}
+                    onEsc={this.closeBranch}
+                  >
+                    {this.renderBranchingView()}
+                  </Layer>
+                )}
+              </Box>
+              <Box justify="center" align="end">
+                <Button
+                  onClick={() => {
+                    this.showBranch();
+                  }}
+                  label="Branching view"
+                />
               </Box>
             </Box>
             {this.renderSurveyDetails()}
@@ -730,18 +792,11 @@ export class SurveyEdit extends React.PureComponent {
                 handleSubmit
               }) => (
                 <StyledForm onSubmit={handleSubmit}>
-                  <Grid
-                    key="surveyEditPlatforms"
-                    gap="small"
-                    areas={[
-                      { name: "label1", start: [0, 0], end: [0, 0] },
-                      { name: "value1", start: [1, 0], end: [1, 0] }
-                    ]}
-                    columns={[["xsmall", "small"], ["large", "flex"]]}
-                    rows={["xsmall", "flex"]}
-                  >
-                    <Text gridArea="label1"> Opt-in Codes: </Text>
-                    <Box gridArea="value1" background="white">
+                  <Box align="left" fill justify="start" direction="row">
+                    <Box width="20%" align="left">
+                      <Text> Opt-in Codes: </Text>
+                    </Box>
+                    <Box align="left" fill>
                       <TextArea
                         id="optInCodes"
                         value={values.optInCodes}
@@ -749,8 +804,12 @@ export class SurveyEdit extends React.PureComponent {
                         onBlur={handleBlur}
                       />
                     </Box>
-                    <Text gridArea="label1">Initialize Codes: </Text>
-                    <Box>
+                  </Box>
+                  <Box align="left" fill justify="start" direction="row">
+                    <Box width="20%" align="left">
+                      <Text> Initialize Codes: </Text>
+                    </Box>
+                    <Box align="left" fill>
                       <TextArea
                         id="initCodes"
                         gridArea="value1"
@@ -759,7 +818,7 @@ export class SurveyEdit extends React.PureComponent {
                         onBlur={handleBlur}
                       />
                     </Box>
-                  </Grid>
+                  </Box>
                   <Box
                     justify="center"
                     align="center"
@@ -793,14 +852,16 @@ SurveyEdit.propTypes = {
   deleteQuestion: PropTypes.func.isRequired,
   addQuestion: PropTypes.func.isRequired,
   uploadAttachment: PropTypes.func.isRequired,
-  updateQuestion: PropTypes.func.isRequired
+  updateQuestion: PropTypes.func.isRequired,
+  getBranchingData: PropTypes.func.isRequired
 };
 function mapStateToProps(state) {
   console.log(state, "here");
   return {
     currentSurvey: state.surveys.currentSurvey,
     questions: state.surveys.questions,
-    message: state.surveys.message
+    message: state.surveys.message,
+    branchData: state.surveys.branchData
   };
 }
 
@@ -813,7 +874,8 @@ function mapDispatchToProps(dispatch) {
     deleteQuestion: data => dispatch(deleteQuestion(data)),
     addQuestion: data => dispatch(addQuestion(data)),
     uploadAttachment: data => dispatch(uploadAttachment(data)),
-    updateQuestion: data => dispatch(updateQuestion(data))
+    updateQuestion: data => dispatch(updateQuestion(data)),
+    getBranchingData: data => dispatch(getBranchingData(data))
   };
 }
 

@@ -6,7 +6,9 @@ import {
   UPDATE_DETAILS,
   FETCH_QUESTIONS,
   ADD_QUESTION,
-  UPDATE_QUESTION
+  UPDATE_QUESTION,
+  GET_BRANCHING_DATA,
+  UPDATE_PLATFORMS
 } from "./constants";
 
 export const initialState = {
@@ -19,7 +21,6 @@ export const initialState = {
 };
 
 function surveysReducer(state = initialState, action) {
-  console.log(action.payload);
   switch (action.type) {
     case `${SURVEYS_URL}_SUBMIT`:
       return { ...state, loading: true };
@@ -56,7 +57,12 @@ function surveysReducer(state = initialState, action) {
     case `${FETCH_QUESTIONS}_SUCCEED`:
       return { ...state, loading: false, questions: action.payload.questions };
     case `${ADD_QUESTION}_SUCCEED`:
-      return { ...state, loading: false, questions: action.payload.questions };
+      return {
+        ...state,
+        loading: false,
+        questions: action.payload.questions,
+        message: action.payload.message
+      };
     case `${UPDATE_QUESTION}_SUCCEED`:
       return {
         ...state,
@@ -64,7 +70,20 @@ function surveysReducer(state = initialState, action) {
         questions: action.payload.questions,
         message: action.payload.message
       };
-
+    case `${GET_BRANCHING_DATA}_SUCCEED`:
+      return { ...state, loading: false, branchData: action.payload.data };
+    case `${GET_BRANCHING_DATA}_SUBMIT`:
+      return {
+        ...state,
+        loading: true,
+        branchData: undefined
+      };
+    case `${UPDATE_PLATFORMS}_SUCCEED`:
+      return {
+        ...state,
+        loading: true,
+        message: action.payload.message
+      };
     default:
       return state;
   }

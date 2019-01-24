@@ -4409,6 +4409,11 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
+gojs@^1.8.35:
+  version "1.8.36"
+  resolved "https://registry.yarnpkg.com/gojs/-/gojs-1.8.36.tgz#efbbe83ba2c1917b401f8e578870428d49fefe39"
+  integrity sha512-/hVx1F36Ig/KNvfVLabKjetpNllmyUz+NvWqpuSLH1E2tFlH33LE4F9gHNTH5/1c3fQNcUm+azmg+7oZDEPmxQ==
+
 graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6:
   version "4.1.15"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.15.tgz#ffb703e1066e8a0eeaa4c8b80ba9253eeefbfb00"
@@ -8360,6 +8365,13 @@ react-fast-compare@^2.0.1:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-2.0.4.tgz#e84b4d455b0fec113e0402c329352715196f81f9"
   integrity sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==
+
+react-gojs@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-gojs/-/react-gojs-2.0.0.tgz#de4496f5160886ff9f3a1719e0dff68624de15e6"
+  integrity sha512-9noyQxCsIdOGO50b+YAoavbe4LUm8K6rr8uakYB1otRMP/a9KgM2zQi24b5ntLZ7Auf/nM8reKphyQ6A+ti8IQ==
+  dependencies:
+    gojs "^1.8.35"
 
 react-helmet@^5.2.0:
   version "5.2.0"
