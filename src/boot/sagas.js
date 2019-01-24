@@ -34,6 +34,7 @@ import {
   uploadAttachmentWatcher,
   updateQuestionWatcher
 } from "containers/Surveys/state/sagas";
+import { fetchDataWatcher } from "containers/DataPoints/state/sagas";
 
 export default sagaMiddleware => {
   sagaMiddleware.run(requestApiWatcher);
@@ -75,4 +76,7 @@ export default sagaMiddleware => {
   sagaMiddleware.run(addQuestionWatcher);
   sagaMiddleware.run(uploadAttachmentWatcher);
   sagaMiddleware.run(updateQuestionWatcher);
+
+  // DataPoints
+  sagaMiddleware.run(fetchDataWatcher);
 };

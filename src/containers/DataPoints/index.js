@@ -11,10 +11,13 @@ import TabTitle from "components/TabTitle";
 import ExportData from "./pages/ExportData";
 import ImportData from "./pages/ImportData";
 
-import { switchTab } from "./state/actions";
+import { switchTab, fetchData } from "./state/actions";
 
-/* eslint-disable react/prefer-stateless-function */
 export class DataPoints extends React.PureComponent {
+  componentDidMount() {
+    this.props.fetchData();
+  }
+
   render() {
     const { activeTab } = this.props.dataPoints;
     return (
@@ -44,7 +47,8 @@ export class DataPoints extends React.PureComponent {
 
 DataPoints.propTypes = {
   dataPoints: PropTypes.object.isRequired,
-  switchTab: PropTypes.func.isRequired
+  switchTab: PropTypes.func.isRequired,
+  fetchData: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
@@ -54,6 +58,7 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
+    fetchData: () => dispatch(fetchData()),
     switchTab: (payload = {}) => dispatch(switchTab(payload))
   };
 }

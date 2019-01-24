@@ -12,8 +12,6 @@ import Sidebar from "components/Sidebar";
 import Home from "containers/Home";
 import Surveys from "containers/Surveys/pages/SurveyList";
 import SurveyEdit from "containers/Surveys/pages/SurveyEdit";
-
-// import SurveyEdit from "containers/SurveyEdit/Loadable";
 import DataPoints from "containers/DataPoints";
 
 import { logout } from "containers/App/state/actions";
