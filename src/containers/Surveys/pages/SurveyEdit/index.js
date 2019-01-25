@@ -409,10 +409,18 @@ export class SurveyEdit extends React.PureComponent {
         }) => (
           <StyledForm onSubmit={handleSubmit}>
             <Box align="left" fill justify="start" direction="row">
-              <Box width="20%" align="left">
-                <Text> Name: </Text>
+              <Box width="20%" justify="center" margin={{ top: "small" }}>
+                <Text textAlign="center"> Name: </Text>
               </Box>
-              <Box align="left" fill>
+              <Box
+                align="left"
+                fill="horizontal"
+                round="small"
+                border={{ color: "brand", side: "all" }}
+                elevation="small"
+                background={{ color: "white" }}
+                margin={{ top: "small" }}
+              >
                 <TextArea
                   id="name"
                   value={values.name}
@@ -427,10 +435,23 @@ export class SurveyEdit extends React.PureComponent {
             </Box>
 
             <Box align="left" fill justify="start" direction="row">
-              <Box width="20%" align="left">
-                <Text> Description: </Text>
+              <Box
+                width="20%"
+                align="right"
+                justify="center"
+                margin={{ top: "small" }}
+              >
+                <Text textAlign="center"> Description: </Text>
               </Box>
-              <Box align="left" fill>
+              <Box
+                align="left"
+                fill="horizontal"
+                round="small"
+                border={{ color: "brand", side: "all" }}
+                elevation="small"
+                background={{ color: "white" }}
+                margin={{ top: "small" }}
+              >
                 <TextArea
                   id="description"
                   value={values.description}
@@ -445,10 +466,23 @@ export class SurveyEdit extends React.PureComponent {
             </Box>
 
             <Box align="left" fill justify="start" direction="row">
-              <Box width="20%" align="left">
-                <Text> Introduction String: </Text>
+              <Box
+                width="20%"
+                align="right"
+                justify="center"
+                margin={{ top: "small" }}
+              >
+                <Text textAlign="center"> Introduction String: </Text>
               </Box>
-              <Box align="left" fill>
+              <Box
+                align="left"
+                fill="horizontal"
+                round="small"
+                border={{ color: "brand", side: "all" }}
+                elevation="small"
+                background={{ color: "white" }}
+                margin={{ top: "small" }}
+              >
                 <TextArea
                   id="introString"
                   gridArea="value"
@@ -464,10 +498,23 @@ export class SurveyEdit extends React.PureComponent {
             </Box>
 
             <Box align="left" fill justify="start" direction="row">
-              <Box width="20%" align="left">
-                <Text> Completion String: </Text>
+              <Box
+                width="20%"
+                align="right"
+                justify="center"
+                margin={{ top: "small" }}
+              >
+                <Text textAlign="center"> Completion String: </Text>
               </Box>
-              <Box align="left" fill>
+              <Box
+                align="left"
+                fill="horizontal"
+                round="small"
+                border={{ color: "brand", side: "all" }}
+                elevation="small"
+                background={{ color: "white" }}
+                margin={{ top: "small" }}
+              >
                 <TextArea
                   id="completionString"
                   gridArea="value"
@@ -486,10 +533,23 @@ export class SurveyEdit extends React.PureComponent {
             </Box>
 
             <Box align="left" fill justify="start" direction="row">
-              <Box width="20%" align="left">
-                <Text> Incentive: </Text>
+              <Box
+                width="20%"
+                align="right"
+                justify="center"
+                margin={{ top: "small" }}
+              >
+                <Text textAlign="center"> Incentive: </Text>
               </Box>
-              <Box align="left" fill>
+              <Box
+                align="left"
+                fill="horizontal"
+                round="small"
+                border={{ color: "brand", side: "all" }}
+                elevation="small"
+                background={{ color: "white" }}
+                margin={{ top: "small" }}
+              >
                 <TextInput
                   id="incentive"
                   gridArea="value"
@@ -505,10 +565,23 @@ export class SurveyEdit extends React.PureComponent {
             </Box>
 
             <Box align="left" fill justify="start" direction="row">
-              <Box width="20%" align="left">
-                <Text> Currency: </Text>
+              <Box
+                width="20%"
+                align="right"
+                justify="center"
+                margin={{ top: "small" }}
+              >
+                <Text textAlign="center"> Currency: </Text>
               </Box>
-              <Box align="left" fill>
+              <Box
+                align="left"
+                fill="horizontal"
+                round="small"
+                border={{ color: "brand", side: "all" }}
+                elevation="small"
+                background={{ color: "white" }}
+                margin={{ top: "small" }}
+              >
                 <TextInput
                   id="currency"
                   value={values.currency}
@@ -802,10 +875,18 @@ export class SurveyEdit extends React.PureComponent {
               }) => (
                 <StyledForm onSubmit={handleSubmit}>
                   <Box align="left" fill justify="start" direction="row">
-                    <Box width="20%" align="left">
-                      <Text> Opt-in Codes: </Text>
+                    <Box width="20%" justify="center" margin={{ top: "small" }}>
+                      <Text textAlign="center"> Opt-in Codes: </Text>
                     </Box>
-                    <Box align="left" fill>
+                    <Box
+                      align="left"
+                      fill="horizontal"
+                      round="small"
+                      border={{ color: "brand", side: "all" }}
+                      elevation="small"
+                      background={{ color: "white" }}
+                      margin={{ top: "small" }}
+                    >
                       <TextArea
                         id="optInCodes"
                         value={values.optInCodes}
@@ -815,10 +896,18 @@ export class SurveyEdit extends React.PureComponent {
                     </Box>
                   </Box>
                   <Box align="left" fill justify="start" direction="row">
-                    <Box width="20%" align="left">
-                      <Text> Initialize Codes: </Text>
+                    <Box width="20%" justify="center" margin={{ top: "small" }}>
+                      <Text textAlign="center"> Initialize Codes: </Text>
                     </Box>
-                    <Box align="left" fill>
+                    <Box
+                      align="left"
+                      fill="horizontal"
+                      round="small"
+                      border={{ color: "brand", side: "all" }}
+                      elevation="small"
+                      background={{ color: "white" }}
+                      margin={{ top: "small" }}
+                    >
                       <TextArea
                         id="initCodes"
                         gridArea="value1"
