@@ -8,7 +8,8 @@ import {
   ADD_QUESTION,
   UPDATE_QUESTION,
   GET_BRANCHING_DATA,
-  UPDATE_PLATFORMS
+  UPDATE_PLATFORMS,
+  DELETE_QUESTION
 } from "./constants";
 
 export const initialState = {
@@ -64,6 +65,13 @@ function surveysReducer(state = initialState, action) {
         message: action.payload.message
       };
     case `${UPDATE_QUESTION}_SUCCEED`:
+      return {
+        ...state,
+        loading: false,
+        questions: action.payload.questions,
+        message: action.payload.message
+      };
+    case `${DELETE_QUESTION}_SUCCEED`:
       return {
         ...state,
         loading: false,

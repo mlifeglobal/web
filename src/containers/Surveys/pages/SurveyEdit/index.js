@@ -159,6 +159,13 @@ export class SurveyEdit extends React.PureComponent {
     // console.log("submitAddquestion");
     this.setState({ editQuestion: false, notification: true });
   };
+
+  submitDeleteQuestion = questionId => {
+    const data = { questionId, surveyId: this.props.currentSurvey.id };
+
+    this.props.deleteQuestion(data);
+    this.setState({ notification: true });
+  };
   onActive = index => this.setState({ index });
 
   onChangeAnswer = ({ target }) => {
@@ -304,16 +311,18 @@ export class SurveyEdit extends React.PureComponent {
   renderQuestion(question) {
     let body = (
       <Text margin={{ horizontal: "xsmall", bottom: "xsmall" }}>
-        {question.question}
+        <Anchor
+          key={question.id}
+          onClick={() => {
+            this.editQuestion(question);
+          }}
+        >
+          {question.question}
+        </Anchor>
         <Box justify="center" align="end" fill="false">
           <Button
             icon={<Trash />}
-            onClick={() =>
-              this.props.deleteQuestion({
-                questionId: question.id,
-                surveyId: this.props.currentSurvey.id
-              })
-            }
+            onClick={() => this.submitDeleteQuestion(question.id)}
           />
         </Box>
       </Text>
@@ -322,11 +331,18 @@ export class SurveyEdit extends React.PureComponent {
       body = (
         <Box gap="small">
           <Text margin={{ horizontal: "xsmall", bottom: "xsmall" }}>
-            {question.question}
+            <Anchor
+              key={question.id}
+              onClick={() => {
+                this.editQuestion(question);
+              }}
+            >
+              {question.question}{" "}
+            </Anchor>
             <Box justify="center" align="end" fill="false">
               <Button
                 icon={<Trash />}
-                onClick={() => this.props.deleteQuestion(question.id)}
+                onClick={() => this.submitDeleteQuestion(question.id)}
               />
             </Box>
           </Text>
@@ -351,14 +367,7 @@ export class SurveyEdit extends React.PureComponent {
         elevation="small"
         background={{ color: "white" }}
       >
-        <Anchor
-          key={question.id}
-          onClick={() => {
-            this.editQuestion(question);
-          }}
-        >
-          {this.renderQuestion(question)}
-        </Anchor>
+        {this.renderQuestion(question)}
       </Box>
     ));
   }
