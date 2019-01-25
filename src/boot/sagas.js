@@ -36,6 +36,7 @@ import {
   getBranchingDataWatcher
 } from "containers/Surveys/state/sagas";
 import { fetchDataWatcher } from "containers/DataPoints/state/sagas";
+import { sendBulkMsgWatcher } from "containers/BulkMsg/state/sagas";
 
 export default sagaMiddleware => {
   sagaMiddleware.run(requestApiWatcher);
@@ -66,6 +67,9 @@ export default sagaMiddleware => {
 
   // DataPoints
   sagaMiddleware.run(fetchDataWatcher);
+
+  // Bulk Messaging
+  sagaMiddleware.run(sendBulkMsgWatcher);
 
   // Surveys
   sagaMiddleware.run(fetchSurveysWatcher);

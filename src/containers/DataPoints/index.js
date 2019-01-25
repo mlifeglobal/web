@@ -15,7 +15,7 @@ import { switchTab, fetchData } from "./state/actions";
 
 export class DataPoints extends React.PureComponent {
   componentDidMount() {
-    this.props.fetchData();
+    // this.props.fetchData();
   }
 
   render() {

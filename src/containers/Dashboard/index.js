@@ -13,6 +13,7 @@ import Home from "containers/Home";
 import Surveys from "containers/Surveys/pages/SurveyList";
 import SurveyEdit from "containers/Surveys/pages/SurveyEdit";
 import DataPoints from "containers/DataPoints";
+import BulkMsg from "containers/BulkMsg";
 
 import { logout } from "containers/App/state/actions";
 
@@ -55,6 +56,11 @@ export class Dashboard extends React.PureComponent {
         id: "data",
         display: "Data Points",
         to: "/data"
+      },
+      {
+        id: "bulk",
+        display: "Bulk",
+        to: "/bulk"
       }
     ];
 
@@ -84,6 +90,7 @@ export class Dashboard extends React.PureComponent {
           <Route exact path="/surveys" component={Surveys} />
           <Route exact path="/surveys/edit" component={SurveyEdit} />
           <Route exact path="/data" component={DataPoints} />
+          <Route exact path="/bulk" component={BulkMsg} />
         </ConnectedSwitch>
       </Box>
     );
