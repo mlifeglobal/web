@@ -11,7 +11,8 @@ import {
   ADD_QUESTION,
   UPLOAD_ATTACHMENT,
   UPDATE_QUESTION,
-  GET_BRANCHING_DATA
+  GET_BRANCHING_DATA,
+  SET_BRANCH
 } from "./constants";
 
 export function fetchSurveys(data) {
@@ -72,6 +73,13 @@ export function addQuestion(data) {
 export function getBranchingData(data) {
   return {
     type: `${GET_BRANCHING_DATA}_SUBMIT`,
+    data
+  };
+}
+
+export function setBranch(data) {
+  return {
+    type: `${SET_BRANCH}_SUBMIT`,
     data
   };
 }

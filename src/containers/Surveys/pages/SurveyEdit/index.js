@@ -39,7 +39,8 @@ import {
   addQuestion,
   uploadAttachment,
   updateQuestion,
-  getBranchingData
+  getBranchingData,
+  setBranch
 } from "../../state/actions";
 
 /* eslint-disable react/prefer-stateless-function */
@@ -49,7 +50,7 @@ export class SurveyEdit extends React.PureComponent {
     this.state = {
       open: false,
       select: "",
-      questionType: "open",
+      questionType: "",
       checked: Object.values(this.props.currentSurvey.platforms),
       checkboxes: ["Facebook", "SMS", "WhatsApp"],
       predefAnswers: [],
@@ -57,7 +58,8 @@ export class SurveyEdit extends React.PureComponent {
       editQuestion: undefined,
       currentQuestion: undefined,
       notification: undefined,
-      showBranch: undefined
+      showBranch: undefined,
+      branchModal: false
     };
   }
 
@@ -83,11 +85,39 @@ export class SurveyEdit extends React.PureComponent {
     }
   };
 
+  openBranchModal = selectedPredef => {
+    if (this.props.currentSurvey.state === "in_progress") {
+      alert("You have to unpublish survey first to make changes");
+    } else {
+      let branchingOptions = [];
+      this.props.questions.map(question => {
+        branchingOptions.push({ label: question.question, value: question.id });
+      });
+      this.setState({
+        branchModal: true,
+        selectedPredef,
+        branchingOptions
+      });
+    }
+  };
+
+  closeBranchModal = () => {
+    this.setState({
+      branchModal: false
+    });
+  };
+
+  submitSetBranch = () => {
+    const { selectedPredef, select } = this.state;
+    const data = { predefinedAnswerId: selectedPredef.id, questions: select };
+    this.props.setBranch(data);
+    this.setState({ notification: true, branchModal: false, select: "" });
+  };
   onClose = () => {
     this.setState({
       open: false,
       select: "",
-      questionType: "open",
+      questionType: "",
       predefAnswers: []
     });
   };
@@ -169,7 +199,6 @@ export class SurveyEdit extends React.PureComponent {
   onActive = index => this.setState({ index });
 
   onChangeAnswer = ({ target }) => {
-    console.log(this.state.predefAnswers, "predef");
     const predefAnswers = this.state.predefAnswers.slice();
     predefAnswers[target.id] = { value: target.value };
     this.setState({ predefAnswers });
@@ -310,47 +339,64 @@ export class SurveyEdit extends React.PureComponent {
 
   renderQuestion(question) {
     let body = (
-      <Text margin={{ horizontal: "xsmall", bottom: "xsmall" }}>
-        <Anchor
-          key={question.id}
-          onClick={() => {
-            this.editQuestion(question);
-          }}
-        >
-          {question.question}
-        </Anchor>
-        <Box justify="center" align="end" fill="false">
-          <Button
-            icon={<Trash />}
-            onClick={() => this.submitDeleteQuestion(question.id)}
-          />
-        </Box>
-      </Text>
-    );
-    if (question.type === "mcq") {
-      body = (
-        <Box gap="small">
-          <Text margin={{ horizontal: "xsmall", bottom: "xsmall" }}>
+      <Box direction="row" fill>
+        <Box width="80%" align="left" justify="center">
+          <Text>
             <Anchor
               key={question.id}
               onClick={() => {
                 this.editQuestion(question);
               }}
             >
-              {question.question}{" "}
+              {question.question}
             </Anchor>
-            <Box justify="center" align="end" fill="false">
+          </Text>{" "}
+        </Box>
+        <Box justify="center" align="end" fill="horizontal">
+          <Button
+            icon={<Trash />}
+            onClick={() => this.submitDeleteQuestion(question.id)}
+          />
+        </Box>
+      </Box>
+    );
+    if (question.type === "mcq") {
+      body = (
+        <Box gap="small">
+          <Box direction="row" fill>
+            <Box width="80%" align="left" justify="center">
+              <Text>
+                <Anchor
+                  key={question.id}
+                  onClick={() => {
+                    this.editQuestion(question);
+                  }}
+                >
+                  {question.question}
+                </Anchor>
+              </Text>
+            </Box>
+            <Box justify="center" align="end" fill="horizontal">
               <Button
                 icon={<Trash />}
                 onClick={() => this.submitDeleteQuestion(question.id)}
               />
             </Box>
-          </Text>
-          {Object.keys(question.answers).map(key => (
-            <Text>
-              {key}: {question.answers[key].value}
-            </Text>
-          ))}
+          </Box>
+          <Box>
+            {Object.keys(question.answers).map(key => (
+              <Anchor
+                key={question.answers[key].id}
+                onClick={() => {
+                  this.openBranchModal(question.answers[key]);
+                }}
+              >
+                <Text>
+                  {key}: {question.answers[key].value}
+                </Text>
+              </Anchor>
+            ))}
+          </Box>
         </Box>
       );
     }
@@ -362,7 +408,8 @@ export class SurveyEdit extends React.PureComponent {
         gap="medium"
         pad={{ horizontal: "small", vertical: "small" }}
         margin="small"
-        round="xxsmall"
+        fill="horizontal"
+        round="small"
         border={{ color: "brand", side: "all" }}
         elevation="small"
         background={{ color: "white" }}
@@ -654,14 +701,16 @@ export class SurveyEdit extends React.PureComponent {
       notification,
       editQuestion,
       question,
-      showBranch
+      showBranch,
+      branchModal,
+      selectedPredef,
+      branchingOptions
     } = this.state;
     const options = [
       { label: "Multiple Choice", value: "mcq" },
       { label: "Open question", value: "open" },
       { label: "File", value: "file" }
     ];
-    console.log("checked", checked);
     let addOptionButton = "";
     let uploadFileButton = "";
     if (questionType === "mcq") {
@@ -849,6 +898,40 @@ export class SurveyEdit extends React.PureComponent {
             <Box justify="center" margin="medium">
               {this.props.questions ? this.renderQuestions() : ""}
             </Box>
+            {branchModal && (
+              <Layer
+                position="center"
+                modal
+                onClickOutside={this.closeBranchModal}
+                onEsc={this.closeBranchModal}
+              >
+                <Box margin="medium">
+                  <Heading level={2} margin="medium">
+                    Set branch for {selectedPredef.value}
+                  </Heading>
+                  <Select
+                    closeMenuOnSelect={false}
+                    options={branchingOptions}
+                    isMulti
+                    value={select}
+                    onChange={option => this.onSelect(option)}
+                  />
+                  <Box
+                    flex={false}
+                    as="footer"
+                    align="center"
+                    justify="center"
+                    margin="medium"
+                  >
+                    <Button
+                      type="submit"
+                      label="Submit"
+                      onClick={this.submitSetBranch}
+                    />
+                  </Box>
+                </Box>
+              </Layer>
+            )}
           </Tab>
           <Tab title="Platforms">
             <Box align="center" pad="large">
@@ -951,10 +1034,11 @@ SurveyEdit.propTypes = {
   addQuestion: PropTypes.func.isRequired,
   uploadAttachment: PropTypes.func.isRequired,
   updateQuestion: PropTypes.func.isRequired,
-  getBranchingData: PropTypes.func.isRequired
+  getBranchingData: PropTypes.func.isRequired,
+  setBranch: PropTypes.func.isRequired
 };
 function mapStateToProps(state) {
-  console.log(state, "here");
+  console.log("state", state);
   return {
     currentSurvey: state.surveys.currentSurvey,
     questions: state.surveys.questions,
@@ -973,7 +1057,8 @@ function mapDispatchToProps(dispatch) {
     addQuestion: data => dispatch(addQuestion(data)),
     uploadAttachment: data => dispatch(uploadAttachment(data)),
     updateQuestion: data => dispatch(updateQuestion(data)),
-    getBranchingData: data => dispatch(getBranchingData(data))
+    getBranchingData: data => dispatch(getBranchingData(data)),
+    setBranch: data => dispatch(setBranch(data))
   };
 }
 

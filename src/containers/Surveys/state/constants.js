@@ -10,3 +10,4 @@ export const ADD_QUESTION = "user/survey-add-question";
 export const UPDATE_QUESTION = "user/survey-update-question";
 export const UPLOAD_ATTACHMENT = "upload-attachment";
 export const GET_BRANCHING_DATA = "user/survey-get-branching-data";
+export const SET_BRANCH = "user/survey-set-branch";

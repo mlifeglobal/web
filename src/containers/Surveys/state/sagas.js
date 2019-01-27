@@ -12,7 +12,8 @@ import {
   ADD_QUESTION,
   UPLOAD_ATTACHMENT,
   UPDATE_QUESTION,
-  GET_BRANCHING_DATA
+  GET_BRANCHING_DATA,
+  SET_BRANCH
 } from "./constants";
 
 export function* fetchSurveys(data) {
@@ -96,6 +97,14 @@ export function* getBranchingDataWatcher() {
   yield takeLatest(`${GET_BRANCHING_DATA}_SUBMIT`, ({ data }) =>
     getBranchingData(data)
   );
+}
+
+export function* setBranch(data) {
+  yield put(requestApi(SET_BRANCH, { data }));
+}
+
+export function* setBranchWatcher() {
+  yield takeLatest(`${SET_BRANCH}_SUBMIT`, ({ data }) => setBranch(data));
 }
 
 export function* updateQuestion(data) {
