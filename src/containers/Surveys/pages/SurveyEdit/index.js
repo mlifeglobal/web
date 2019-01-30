@@ -128,6 +128,11 @@ export class SurveyEdit extends React.PureComponent {
     this.setState({ select: option });
     this.setState({ questionType: option.value });
   };
+
+  onSelectAnswer = answerType => {
+    console.log(answerType);
+    this.setState({ answerType });
+  };
   addAnswer = () => {
     const predefAnswers = this.state.predefAnswers.slice();
 
@@ -136,13 +141,14 @@ export class SurveyEdit extends React.PureComponent {
   };
   submitAddQuestion = () => {
     const predefAnswers = this.state.predefAnswers.slice();
-    const { question, select, file } = this.state;
+    const { question, select, file, answerType } = this.state;
     if (select.value !== "file") {
       const data = {
         surveyId: this.props.currentSurvey.id,
         question,
         questionType: select.value,
-        predefAnswers
+        predefAnswers,
+        answerType: answerType.value
       };
 
       this.props.addQuestion(data);
@@ -159,19 +165,26 @@ export class SurveyEdit extends React.PureComponent {
       this.props.uploadAttachment(data);
     }
 
-    this.setState({ open: false, notification: true });
+    this.setState({
+      open: false,
+      notification: true,
+      predefAnswers: [],
+      select: "",
+      answerType: ""
+    });
   };
 
   submitEditQuestion = () => {
     const predefAnswers = this.state.predefAnswers.slice();
-    const { question, select, file, questionId } = this.state;
+    const { question, select, file, questionId, answerType } = this.state;
     if (select.value !== "file") {
       const data = {
         questionId,
         question,
         surveyId: this.props.currentSurvey.id,
         questionType: select.value,
-        predefAnswers
+        predefAnswers,
+        answerType: answerType.value
       };
 
       this.props.updateQuestion(data);
@@ -230,10 +243,15 @@ export class SurveyEdit extends React.PureComponent {
         file: "File"
       };
 
+      const answerOptions = { multiple: "Multiple", single: "Single" };
       this.setState({
         editQuestion: true,
         question: question.question,
         select: { label: options[question.type], value: question.type },
+        answerType: {
+          label: answerOptions[question.answerType],
+          value: question.answerType
+        },
         questionType: question.type,
         questionId: question.id
       });
@@ -340,7 +358,7 @@ export class SurveyEdit extends React.PureComponent {
   renderQuestion(question) {
     let body = (
       <Box direction="row" fill>
-        <Box width="80%" align="left" justify="center">
+        <Box width="80%" align="start" justify="center">
           <Text>
             <Anchor
               key={question.id}
@@ -364,7 +382,7 @@ export class SurveyEdit extends React.PureComponent {
       body = (
         <Box gap="small">
           <Box direction="row" fill>
-            <Box width="80%" align="left" justify="center">
+            <Box width="80%" align="start" justify="center">
               <Text>
                 <Anchor
                   key={question.id}
@@ -405,6 +423,7 @@ export class SurveyEdit extends React.PureComponent {
   renderQuestions() {
     return this.props.questions.map(question => (
       <Box
+        key={question.id}
         gap="medium"
         pad={{ horizontal: "small", vertical: "small" }}
         margin="small"
@@ -455,12 +474,12 @@ export class SurveyEdit extends React.PureComponent {
           handleSubmit
         }) => (
           <StyledForm onSubmit={handleSubmit}>
-            <Box align="left" fill justify="start" direction="row">
+            <Box align="start" fill justify="start" direction="row">
               <Box width="20%" justify="center" margin={{ top: "small" }}>
                 <Text textAlign="center"> Name: </Text>
               </Box>
               <Box
-                align="left"
+                align="start"
                 fill="horizontal"
                 round="small"
                 border={{ color: "brand", side: "all" }}
@@ -481,17 +500,12 @@ export class SurveyEdit extends React.PureComponent {
               </Box>
             </Box>
 
-            <Box align="left" fill justify="start" direction="row">
-              <Box
-                width="20%"
-                align="right"
-                justify="center"
-                margin={{ top: "small" }}
-              >
+            <Box align="start" fill justify="start" direction="row">
+              <Box width="20%" justify="center" margin={{ top: "small" }}>
                 <Text textAlign="center"> Description: </Text>
               </Box>
               <Box
-                align="left"
+                align="start"
                 fill="horizontal"
                 round="small"
                 border={{ color: "brand", side: "all" }}
@@ -512,17 +526,12 @@ export class SurveyEdit extends React.PureComponent {
               </Box>
             </Box>
 
-            <Box align="left" fill justify="start" direction="row">
-              <Box
-                width="20%"
-                align="right"
-                justify="center"
-                margin={{ top: "small" }}
-              >
+            <Box align="start" fill justify="start" direction="row">
+              <Box width="20%" justify="center" margin={{ top: "small" }}>
                 <Text textAlign="center"> Introduction String: </Text>
               </Box>
               <Box
-                align="left"
+                align="start"
                 fill="horizontal"
                 round="small"
                 border={{ color: "brand", side: "all" }}
@@ -544,17 +553,12 @@ export class SurveyEdit extends React.PureComponent {
               </Box>
             </Box>
 
-            <Box align="left" fill justify="start" direction="row">
-              <Box
-                width="20%"
-                align="right"
-                justify="center"
-                margin={{ top: "small" }}
-              >
+            <Box align="start" fill justify="start" direction="row">
+              <Box width="20%" justify="center" margin={{ top: "small" }}>
                 <Text textAlign="center"> Completion String: </Text>
               </Box>
               <Box
-                align="left"
+                align="start"
                 fill="horizontal"
                 round="small"
                 border={{ color: "brand", side: "all" }}
@@ -579,17 +583,12 @@ export class SurveyEdit extends React.PureComponent {
               </Box>
             </Box>
 
-            <Box align="left" fill justify="start" direction="row">
-              <Box
-                width="20%"
-                align="right"
-                justify="center"
-                margin={{ top: "small" }}
-              >
+            <Box align="start" fill justify="start" direction="row">
+              <Box width="20%" justify="center" margin={{ top: "small" }}>
                 <Text textAlign="center"> Incentive: </Text>
               </Box>
               <Box
-                align="left"
+                align="start"
                 fill="horizontal"
                 round="small"
                 border={{ color: "brand", side: "all" }}
@@ -611,17 +610,12 @@ export class SurveyEdit extends React.PureComponent {
               </Box>
             </Box>
 
-            <Box align="left" fill justify="start" direction="row">
-              <Box
-                width="20%"
-                align="right"
-                justify="center"
-                margin={{ top: "small" }}
-              >
+            <Box align="start" fill justify="start" direction="row">
+              <Box width="20%" justify="center" margin={{ top: "small" }}>
                 <Text textAlign="center"> Currency: </Text>
               </Box>
               <Box
-                align="left"
+                align="start"
                 fill="horizontal"
                 round="small"
                 border={{ color: "brand", side: "all" }}
@@ -704,12 +698,18 @@ export class SurveyEdit extends React.PureComponent {
       showBranch,
       branchModal,
       selectedPredef,
-      branchingOptions
+      branchingOptions,
+      answerType
     } = this.state;
     const options = [
       { label: "Multiple Choice", value: "mcq" },
       { label: "Open question", value: "open" },
       { label: "File", value: "file" }
+    ];
+
+    const answerOptions = [
+      { label: "Multiple", value: "multiple" },
+      { label: "Single", value: "single" }
     ];
     let addOptionButton = "";
     let uploadFileButton = "";
@@ -756,6 +756,15 @@ export class SurveyEdit extends React.PureComponent {
                     onClickOutside={this.closeBranch}
                     onEsc={this.closeBranch}
                   >
+                    <Box justify="center" align="end" margin="medium">
+                      <Button
+                        primary
+                        color="accent-3"
+                        icon={<Close />}
+                        onClick={this.closeBranch}
+                        label="Close"
+                      />
+                    </Box>
                     {this.renderBranchingView()}
                   </Layer>
                 )}
@@ -790,12 +799,10 @@ export class SurveyEdit extends React.PureComponent {
                 onEsc={this.onClose}
               >
                 <Box
-                  // as="form"
                   fill="vertical"
                   overflow="auto"
                   width="medium"
                   pad="medium"
-                  // onSubmit={this.onClose}
                 >
                   <Box flex={false} direction="row" justify="between">
                     <Heading level={2} margin="none">
@@ -807,7 +814,7 @@ export class SurveyEdit extends React.PureComponent {
                     <FormField label="Question">
                       <TextInput id="question" onChange={this.setQuestion} />
                     </FormField>
-                    <FormField label="Select type">
+                    <FormField label="Select question type">
                       <Select
                         options={options}
                         value={select}
@@ -815,6 +822,16 @@ export class SurveyEdit extends React.PureComponent {
                         onChange={option => this.onSelect(option)}
                       />
                     </FormField>
+
+                    <FormField label="Select answer type">
+                      <Select
+                        options={answerOptions}
+                        value={answerType}
+                        onSearch={() => {}}
+                        onChange={option => this.onSelectAnswer(option)}
+                      />
+                    </FormField>
+
                     {Object.keys(predefAnswers).map(item => (
                       <FormField label={`Option ${item}`}>
                         <TextInput id={item} onChange={this.onChangeAnswer} />
@@ -863,7 +880,7 @@ export class SurveyEdit extends React.PureComponent {
                         value={question}
                       />
                     </FormField>
-                    <FormField label="Select type">
+                    <FormField label="Select question type">
                       <Select
                         id="editSelect"
                         options={options}
@@ -871,6 +888,16 @@ export class SurveyEdit extends React.PureComponent {
                         onChange={option => this.onSelect(option)}
                       />
                     </FormField>
+
+                    <FormField label="Select answer type">
+                      <Select
+                        options={answerOptions}
+                        value={answerType}
+                        onSearch={() => {}}
+                        onChange={option => this.onSelectAnswer(option)}
+                      />
+                    </FormField>
+
                     {predefAnswers.map((item, index) => (
                       <FormField label={`Option ${index}`}>
                         <TextInput
@@ -957,12 +984,12 @@ export class SurveyEdit extends React.PureComponent {
                 handleSubmit
               }) => (
                 <StyledForm onSubmit={handleSubmit}>
-                  <Box align="left" fill justify="start" direction="row">
+                  <Box align="start" fill justify="start" direction="row">
                     <Box width="20%" justify="center" margin={{ top: "small" }}>
                       <Text textAlign="center"> Opt-in Codes: </Text>
                     </Box>
                     <Box
-                      align="left"
+                      align="start"
                       fill="horizontal"
                       round="small"
                       border={{ color: "brand", side: "all" }}
@@ -978,12 +1005,12 @@ export class SurveyEdit extends React.PureComponent {
                       />
                     </Box>
                   </Box>
-                  <Box align="left" fill justify="start" direction="row">
+                  <Box align="start" fill justify="start" direction="row">
                     <Box width="20%" justify="center" margin={{ top: "small" }}>
                       <Text textAlign="center"> Initialize Codes: </Text>
                     </Box>
                     <Box
-                      align="left"
+                      align="start"
                       fill="horizontal"
                       round="small"
                       border={{ color: "brand", side: "all" }}
