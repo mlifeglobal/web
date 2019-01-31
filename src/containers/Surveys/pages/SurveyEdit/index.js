@@ -43,7 +43,6 @@ import {
   setBranch
 } from "../../state/actions";
 
-/* eslint-disable react/prefer-stateless-function */
 export class SurveyEdit extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -68,7 +67,6 @@ export class SurveyEdit extends React.PureComponent {
 
     if (target.checked && checked.indexOf(target.id) === -1) {
       checked.push(target.id);
-      console.log("oncheck", checked, target.id);
       this.setState({ checked });
     } else {
       this.setState({ checked: checked.filter(item => item !== target.id) });
@@ -130,7 +128,6 @@ export class SurveyEdit extends React.PureComponent {
   };
 
   onSelectAnswer = answerType => {
-    console.log(answerType);
     this.setState({ answerType });
   };
   addAnswer = () => {
@@ -154,14 +151,10 @@ export class SurveyEdit extends React.PureComponent {
       this.props.addQuestion(data);
     } else {
       let data = new FormData();
-      // console.log(file);
       data.append("file", file);
       data.append("text", question);
       data.append("surveyId", this.props.currentSurvey.id);
-      console.log("data1", data);
-      for (var pair of data.entries()) {
-        console.log(pair[0] + ", " + pair[1]);
-      }
+
       this.props.uploadAttachment(data);
     }
 
@@ -199,7 +192,6 @@ export class SurveyEdit extends React.PureComponent {
       // }
       // this.props.uploadAttachment(data);
     }
-    // console.log("submitAddquestion");
     this.setState({ editQuestion: false, notification: true });
   };
 
@@ -468,7 +460,6 @@ export class SurveyEdit extends React.PureComponent {
           touched,
           errors,
           dirty,
-          isSubmitting,
           handleChange,
           handleBlur,
           handleSubmit
@@ -1034,7 +1025,6 @@ export class SurveyEdit extends React.PureComponent {
                   >
                     <Button
                       primary
-                      // disabled={!dirty || isSubmitting}
                       type="submit"
                       label="Submit"
                       onClick={handleSubmit}
@@ -1065,7 +1055,6 @@ SurveyEdit.propTypes = {
   setBranch: PropTypes.func.isRequired
 };
 function mapStateToProps(state) {
-  console.log("state", state);
   return {
     currentSurvey: state.surveys.currentSurvey,
     questions: state.surveys.questions,

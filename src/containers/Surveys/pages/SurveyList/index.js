@@ -144,7 +144,7 @@ export class SurveyList extends React.PureComponent {
           >
             <Text>Questions</Text>
             <Text size="large" weight="bold">
-              {survey.state}
+              {survey.questionsCount}
             </Text>
           </Box>
         </Grid>
@@ -367,13 +367,6 @@ export class SurveyList extends React.PureComponent {
             </Box>
           </Layer>
         )}
-        {/* <SurveyNew
-          title="Create Survey"
-          isOpen={this.state.modalIsOpen}
-          askToClose={this.closeModal}
-          onSubmit={this.onSubmitSurvey}
-          onRequestClose={this.handleModalCloseRequest}
-        /> */}
 
         {surveysCount > 0 ? this.renderSurveys() : ""}
         <Box alignSelf="center">
