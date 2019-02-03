@@ -8,7 +8,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { Add, Close, Trash, StatusGood, FormClose } from "grommet-icons";
+import {
+  Add,
+  Close,
+  Trash,
+  StatusGood,
+  FormClose,
+  Down,
+  Up
+} from "grommet-icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
@@ -40,8 +48,10 @@ import {
   uploadAttachment,
   updateQuestion,
   getBranchingData,
-  setBranch
+  setBranch,
+  changeOrder
 } from "../../state/actions";
+import { LayeredDigraphNetwork } from "gojs";
 
 export class SurveyEdit extends React.PureComponent {
   constructor(props) {
@@ -201,6 +211,28 @@ export class SurveyEdit extends React.PureComponent {
     this.props.deleteQuestion(data);
     this.setState({ notification: true });
   };
+
+  changeOrder = (index, action) => {
+    const data = { surveyId: this.props.currentSurvey.id };
+    if (action === "up") {
+      data.questionId1 = this.props.questions[index].id;
+      data.questionId2 =
+        index === 0
+          ? this.props.questions[this.props.questions.length - 1].id
+          : this.props.questions[index - 1].id;
+    } else {
+      data.questionId1 = this.props.questions[index].id;
+      data.questionId2 =
+        index < this.props.questions.length - 1
+          ? this.props.questions[index + 1].id
+          : this.props.questions[0].id;
+    }
+    console.log('questions', this.props.questions)
+    console.log(index, data)
+    this.props.changeOrder(data);
+    this.setState({ notification: true });
+  };
+
   onActive = index => this.setState({ index });
 
   onChangeAnswer = ({ target }) => {
@@ -220,9 +252,19 @@ export class SurveyEdit extends React.PureComponent {
       surveyId: this.props.currentSurvey.id,
       state: this.props.currentSurvey.state
     };
-
-    this.props.toggleState(data);
-    this.setState({ notification: true });
+    if (this.props.currentSurvey.state !== "in_progress") {
+      if (this.props.currentSurvey.questionsCount == 0) {
+        alert("Survey is empty. Please add question before publishing.");
+      } else if (this.props.currentSurvey.platforms.length === 0) {
+        alert("Please set publishing platforms.");
+      } else {
+        this.props.toggleState(data);
+        this.setState({ notification: true });
+      }
+    } else {
+      this.props.toggleState(data);
+      this.setState({ notification: true });
+    }
   }
 
   editQuestion = question => {
@@ -360,7 +402,7 @@ export class SurveyEdit extends React.PureComponent {
             >
               {question.question}
             </Anchor>
-          </Text>{" "}
+          </Text>
         </Box>
         <Box justify="center" align="end" fill="horizontal">
           <Button
@@ -413,19 +455,29 @@ export class SurveyEdit extends React.PureComponent {
     return body;
   }
   renderQuestions() {
-    return this.props.questions.map(question => (
-      <Box
-        key={question.id}
-        gap="medium"
-        pad={{ horizontal: "small", vertical: "small" }}
-        margin="small"
-        fill="horizontal"
-        round="small"
-        border={{ color: "brand", side: "all" }}
-        elevation="small"
-        background={{ color: "white" }}
-      >
-        {this.renderQuestion(question)}
+    return this.props.questions.map((question, index) => (
+      <Box direction="row" fill>
+        <Box align="start" fill="vertical">
+          <Button icon={<Up />} onClick={() => this.changeOrder(index, "up")} />
+
+          <Button
+            icon={<Down />}
+            onClick={() => this.changeOrder(index, "down")}
+          />
+        </Box>
+        <Box
+          key={question.id}
+          gap="medium"
+          pad={{ horizontal: "small", vertical: "small" }}
+          margin="small"
+          fill="horizontal"
+          round="small"
+          border={{ color: "brand", side: "all" }}
+          elevation="small"
+          background={{ color: "white" }}
+        >
+          {this.renderQuestion(question)}
+        </Box>
       </Box>
     ));
   }
@@ -465,7 +517,7 @@ export class SurveyEdit extends React.PureComponent {
           handleSubmit
         }) => (
           <StyledForm onSubmit={handleSubmit}>
-            <Box align="start" fill justify="start" direction="row">
+            <Box align="start" fill justify="center" direction="row">
               <Box width="20%" justify="center" margin={{ top: "small" }}>
                 <Text textAlign="center"> Name: </Text>
               </Box>
@@ -476,7 +528,7 @@ export class SurveyEdit extends React.PureComponent {
                 border={{ color: "brand", side: "all" }}
                 elevation="small"
                 background={{ color: "white" }}
-                margin={{ top: "small" }}
+                margin={{ top: "small", right: "small" }}
               >
                 <TextArea
                   id="name"
@@ -491,7 +543,7 @@ export class SurveyEdit extends React.PureComponent {
               </Box>
             </Box>
 
-            <Box align="start" fill justify="start" direction="row">
+            <Box align="start" fill justify="center" direction="row">
               <Box width="20%" justify="center" margin={{ top: "small" }}>
                 <Text textAlign="center"> Description: </Text>
               </Box>
@@ -502,7 +554,7 @@ export class SurveyEdit extends React.PureComponent {
                 border={{ color: "brand", side: "all" }}
                 elevation="small"
                 background={{ color: "white" }}
-                margin={{ top: "small" }}
+                margin={{ top: "small", right: "small" }}
               >
                 <TextArea
                   id="description"
@@ -528,7 +580,7 @@ export class SurveyEdit extends React.PureComponent {
                 border={{ color: "brand", side: "all" }}
                 elevation="small"
                 background={{ color: "white" }}
-                margin={{ top: "small" }}
+                margin={{ top: "small", right: "small" }}
               >
                 <TextArea
                   id="introString"
@@ -555,7 +607,7 @@ export class SurveyEdit extends React.PureComponent {
                 border={{ color: "brand", side: "all" }}
                 elevation="small"
                 background={{ color: "white" }}
-                margin={{ top: "small" }}
+                margin={{ top: "small", right: "small" }}
               >
                 <TextArea
                   id="completionString"
@@ -585,7 +637,7 @@ export class SurveyEdit extends React.PureComponent {
                 border={{ color: "brand", side: "all" }}
                 elevation="small"
                 background={{ color: "white" }}
-                margin={{ top: "small" }}
+                margin={{ top: "small", right: "small" }}
               >
                 <TextInput
                   id="incentive"
@@ -612,7 +664,7 @@ export class SurveyEdit extends React.PureComponent {
                 border={{ color: "brand", side: "all" }}
                 elevation="small"
                 background={{ color: "white" }}
-                margin={{ top: "small" }}
+                margin={{ top: "small", right: "small" }}
               >
                 <TextInput
                   id="currency"
@@ -890,9 +942,9 @@ export class SurveyEdit extends React.PureComponent {
                     </FormField>
 
                     {predefAnswers.map((item, index) => (
-                      <FormField label={`Option ${index}`}>
+                      <FormField label={`Option ${index + 1}`}>
                         <TextInput
-                          id={index}
+                          id={index + 1}
                           onChange={this.onChangeAnswer}
                           value={item}
                         />
@@ -966,14 +1018,7 @@ export class SurveyEdit extends React.PureComponent {
               </Box>
             </Box>
             <Formik onSubmit={this.submitPlatforms}>
-              {({
-                values,
-                dirty,
-                isSubmitting,
-                handleChange,
-                handleBlur,
-                handleSubmit
-              }) => (
+              {({ values, handleChange, handleBlur, handleSubmit }) => (
                 <StyledForm onSubmit={handleSubmit}>
                   <Box align="start" fill justify="start" direction="row">
                     <Box width="20%" justify="center" margin={{ top: "small" }}>
@@ -986,7 +1031,7 @@ export class SurveyEdit extends React.PureComponent {
                       border={{ color: "brand", side: "all" }}
                       elevation="small"
                       background={{ color: "white" }}
-                      margin={{ top: "small" }}
+                      margin={{ top: "small", right: "small" }}
                     >
                       <TextArea
                         id="optInCodes"
@@ -1007,7 +1052,7 @@ export class SurveyEdit extends React.PureComponent {
                       border={{ color: "brand", side: "all" }}
                       elevation="small"
                       background={{ color: "white" }}
-                      margin={{ top: "small" }}
+                      margin={{ top: "small", right: "small" }}
                     >
                       <TextArea
                         id="initCodes"
@@ -1074,7 +1119,8 @@ function mapDispatchToProps(dispatch) {
     uploadAttachment: data => dispatch(uploadAttachment(data)),
     updateQuestion: data => dispatch(updateQuestion(data)),
     getBranchingData: data => dispatch(getBranchingData(data)),
-    setBranch: data => dispatch(setBranch(data))
+    setBranch: data => dispatch(setBranch(data)),
+    changeOrder: data => dispatch(changeOrder(data))
   };
 }
 

@@ -10,7 +10,8 @@ import {
   GET_BRANCHING_DATA,
   UPDATE_PLATFORMS,
   DELETE_QUESTION,
-  SET_BRANCH
+  SET_BRANCH,
+  QUESTION_CHANGE_ORDER
 } from "./constants";
 
 export const initialState = {
@@ -98,6 +99,13 @@ function surveysReducer(state = initialState, action) {
         ...state,
         loading: false,
         message: action.payload.message
+      };
+    case `${QUESTION_CHANGE_ORDER}_SUCCEED`:
+      return {
+        ...state,
+        loading: false,
+        message: action.payload.message,
+        questions: action.payload.questions
       };
     default:
       return state;

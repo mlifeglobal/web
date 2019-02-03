@@ -12,7 +12,8 @@ import {
   UPLOAD_ATTACHMENT,
   UPDATE_QUESTION,
   GET_BRANCHING_DATA,
-  SET_BRANCH
+  SET_BRANCH,
+  QUESTION_CHANGE_ORDER
 } from "./constants";
 
 export function fetchSurveys(data) {
@@ -80,6 +81,12 @@ export function getBranchingData(data) {
 export function setBranch(data) {
   return {
     type: `${SET_BRANCH}_SUBMIT`,
+    data
+  };
+}
+export function changeOrder(data) {
+  return {
+    type: `${QUESTION_CHANGE_ORDER}_SUBMIT`,
     data
   };
 }

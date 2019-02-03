@@ -34,7 +34,8 @@ import {
   uploadAttachmentWatcher,
   updateQuestionWatcher,
   getBranchingDataWatcher,
-  setBranchWatcher
+  setBranchWatcher,
+  changeOrderWatcher
 } from "containers/Surveys/state/sagas";
 import { fetchDataWatcher } from "containers/DataPoints/state/sagas";
 import { sendBulkMsgWatcher } from "containers/BulkMsg/state/sagas";
@@ -87,4 +88,5 @@ export default sagaMiddleware => {
   sagaMiddleware.run(updateQuestionWatcher);
   sagaMiddleware.run(getBranchingDataWatcher);
   sagaMiddleware.run(setBranchWatcher);
+  sagaMiddleware.run(changeOrderWatcher);
 };
