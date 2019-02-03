@@ -227,8 +227,6 @@ export class SurveyEdit extends React.PureComponent {
           ? this.props.questions[index + 1].id
           : this.props.questions[0].id;
     }
-    console.log('questions', this.props.questions)
-    console.log(index, data)
     this.props.changeOrder(data);
     this.setState({ notification: true });
   };
@@ -490,11 +488,7 @@ export class SurveyEdit extends React.PureComponent {
           introString: this.props.currentSurvey.introString,
           completionString: this.props.currentSurvey.completionString,
           incentive: this.props.currentSurvey.incentive,
-          currency: this.props.currentSurvey.currency,
-          optInCodes: Object.values(this.props.currentSurvey.optInCodes).join(
-            ","
-          ),
-          initCodes: Object.values(this.props.currentSurvey.initCodes).join(",")
+          currency: this.props.currentSurvey.currency
         }}
         validationSchema={Yup.object().shape({
           name: Yup.string().required("Required"),
@@ -1100,6 +1094,7 @@ SurveyEdit.propTypes = {
   setBranch: PropTypes.func.isRequired
 };
 function mapStateToProps(state) {
+  console.log("state", state);
   return {
     currentSurvey: state.surveys.currentSurvey,
     questions: state.surveys.questions,

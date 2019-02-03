@@ -64,7 +64,8 @@ function surveysReducer(state = initialState, action) {
         ...state,
         loading: false,
         questions: action.payload.questions,
-        message: action.payload.message
+        message: action.payload.message,
+        currentSurvey: action.payload.survey
       };
     case `${UPDATE_QUESTION}_SUCCEED`:
       return {
@@ -78,7 +79,8 @@ function surveysReducer(state = initialState, action) {
         ...state,
         loading: false,
         questions: action.payload.questions,
-        message: action.payload.message
+        message: action.payload.message,
+        currentSurvey: action.payload.survey
       };
     case `${GET_BRANCHING_DATA}_SUCCEED`:
       return { ...state, loading: false, branchData: action.payload.data };
@@ -92,7 +94,8 @@ function surveysReducer(state = initialState, action) {
       return {
         ...state,
         loading: false,
-        message: action.payload.message
+        message: action.payload.message,
+        currentSurvey: action.payload.survey
       };
     case `${SET_BRANCH}_SUCCEED`:
       return {
