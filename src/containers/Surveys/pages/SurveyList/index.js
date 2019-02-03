@@ -154,7 +154,6 @@ export class SurveyList extends React.PureComponent {
   render() {
     const { surveysCount } = this.props.surveysReducer.data;
     const { modalIsOpen } = this.state;
-    console.log(this.props.surveysReducer);
     return (
       <Box fill pad="small" gap="medium">
         <Helmet title="Surveys" />

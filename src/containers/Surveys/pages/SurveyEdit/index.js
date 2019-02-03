@@ -35,7 +35,8 @@ import {
   Heading,
   Layer,
   CheckBox,
-  Anchor
+  Anchor,
+  Form
 } from "grommet";
 
 import {
@@ -51,7 +52,6 @@ import {
   setBranch,
   changeOrder
 } from "../../state/actions";
-import { LayeredDigraphNetwork } from "gojs";
 
 export class SurveyEdit extends React.PureComponent {
   constructor(props) {
@@ -61,6 +61,8 @@ export class SurveyEdit extends React.PureComponent {
       select: "",
       questionType: "",
       checked: Object.values(this.props.currentSurvey.platforms),
+      initCodes: this.props.currentSurvey.initCodes.join(","),
+      optInCodes: this.props.currentSurvey.optInCodes.join(","),
       checkboxes: ["Facebook", "SMS", "WhatsApp"],
       predefAnswers: [],
       file: undefined,
@@ -245,6 +247,10 @@ export class SurveyEdit extends React.PureComponent {
   setQuestion = ({ target }) => {
     this.setState({ question: target.value });
   };
+
+  handleChange = ({ target }) => {
+    this.setState({ [target.id]: target.value });
+  };
   submitChangeState() {
     const data = {
       surveyId: this.props.currentSurvey.id,
@@ -330,11 +336,11 @@ export class SurveyEdit extends React.PureComponent {
       this.setState({ notification: true });
     }
   };
-  submitPlatforms = values => {
+  submitPlatforms = () => {
     if (this.props.currentSurvey.state === "in_progress") {
       alert("You have to unpublish survey first to make changes");
     } else {
-      const data = values;
+      const data = {};
       data.surveyId = this.props.currentSurvey.id;
       if (
         JSON.stringify(this.state.checked) !==
@@ -342,27 +348,26 @@ export class SurveyEdit extends React.PureComponent {
       ) {
         data.platforms = this.state.checked;
       }
-
+      const { optInCodes, initCodes } = this.state;
       if (
-        values.optInCodes &&
-        values.optInCodes
+        optInCodes &&
+        optInCodes
           .split(",")
           .sort()
-          .toString() === this.props.currentSurvey.optInCodes.sort().toString()
+          .toString() !== this.props.currentSurvey.optInCodes.sort().toString()
       ) {
-        delete data.optInCodes;
+        data.optInCodes = optInCodes;
       }
       if (
-        values.initCodes &&
-        values.initCodes
+        initCodes &&
+        initCodes
           .split(",")
           .sort()
-          .toString() === this.props.currentSurvey.initCodes.sort().toString()
+          .toString() !== this.props.currentSurvey.initCodes.sort().toString()
       ) {
-        delete data.initCodes;
+        data.initCodes = initCodes;
       }
-
-      this.props.updatePlatforms(values);
+      this.props.updatePlatforms(data);
       this.setState({ notification: true });
     }
   };
@@ -454,7 +459,7 @@ export class SurveyEdit extends React.PureComponent {
   }
   renderQuestions() {
     return this.props.questions.map((question, index) => (
-      <Box direction="row" fill>
+      <Box direction="row" fill key={question.id}>
         <Box align="start" fill="vertical">
           <Button icon={<Up />} onClick={() => this.changeOrder(index, "up")} />
 
@@ -464,7 +469,6 @@ export class SurveyEdit extends React.PureComponent {
           />
         </Box>
         <Box
-          key={question.id}
           gap="medium"
           pad={{ horizontal: "small", vertical: "small" }}
           margin="small"
@@ -736,7 +740,9 @@ export class SurveyEdit extends React.PureComponent {
       branchModal,
       selectedPredef,
       branchingOptions,
-      answerType
+      answerType,
+      initCodes,
+      optInCodes
     } = this.state;
     const options = [
       { label: "Multiple Choice", value: "mcq" },
@@ -1011,67 +1017,58 @@ export class SurveyEdit extends React.PureComponent {
                 ))}
               </Box>
             </Box>
-            <Formik onSubmit={this.submitPlatforms}>
-              {({ values, handleChange, handleBlur, handleSubmit }) => (
-                <StyledForm onSubmit={handleSubmit}>
-                  <Box align="start" fill justify="start" direction="row">
-                    <Box width="20%" justify="center" margin={{ top: "small" }}>
-                      <Text textAlign="center"> Opt-in Codes: </Text>
-                    </Box>
-                    <Box
-                      align="start"
-                      fill="horizontal"
-                      round="small"
-                      border={{ color: "brand", side: "all" }}
-                      elevation="small"
-                      background={{ color: "white" }}
-                      margin={{ top: "small", right: "small" }}
-                    >
-                      <TextArea
-                        id="optInCodes"
-                        value={values.optInCodes}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      />
-                    </Box>
-                  </Box>
-                  <Box align="start" fill justify="start" direction="row">
-                    <Box width="20%" justify="center" margin={{ top: "small" }}>
-                      <Text textAlign="center"> Initialize Codes: </Text>
-                    </Box>
-                    <Box
-                      align="start"
-                      fill="horizontal"
-                      round="small"
-                      border={{ color: "brand", side: "all" }}
-                      elevation="small"
-                      background={{ color: "white" }}
-                      margin={{ top: "small", right: "small" }}
-                    >
-                      <TextArea
-                        id="initCodes"
-                        gridArea="value1"
-                        value={values.initCodes}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      />
-                    </Box>
-                  </Box>
-                  <Box
-                    justify="center"
-                    align="center"
-                    margin={{ top: "small" }}
-                  >
-                    <Button
-                      primary
-                      type="submit"
-                      label="Submit"
-                      onClick={handleSubmit}
-                    />
-                  </Box>
-                </StyledForm>
-              )}
-            </Formik>
+
+            <Form>
+              <Box align="start" fill justify="start" direction="row">
+                <Box width="20%" justify="center" margin={{ top: "small" }}>
+                  <Text textAlign="center"> Opt-in Codes: </Text>
+                </Box>
+                <Box
+                  align="start"
+                  fill="horizontal"
+                  round="small"
+                  border={{ color: "brand", side: "all" }}
+                  elevation="small"
+                  background={{ color: "white" }}
+                  margin={{ top: "small", right: "small" }}
+                >
+                  <TextArea
+                    id="optInCodes"
+                    value={optInCodes}
+                    onChange={this.handleChange}
+                  />
+                </Box>
+              </Box>
+              <Box align="start" fill justify="start" direction="row">
+                <Box width="20%" justify="center" margin={{ top: "small" }}>
+                  <Text textAlign="center"> Initialize Codes: </Text>
+                </Box>
+                <Box
+                  align="start"
+                  fill="horizontal"
+                  round="small"
+                  border={{ color: "brand", side: "all" }}
+                  elevation="small"
+                  background={{ color: "white" }}
+                  margin={{ top: "small", right: "small" }}
+                >
+                  <TextArea
+                    id="initCodes"
+                    gridArea="value1"
+                    value={initCodes}
+                    onChange={this.handleChange}
+                  />
+                </Box>
+              </Box>
+              <Box justify="center" align="center" margin={{ top: "small" }}>
+                <Button
+                  primary
+                  type="submit"
+                  label="Submit"
+                  onClick={this.submitPlatforms}
+                />
+              </Box>
+            </Form>
           </Tab>
         </Tabs>
         {notification && this.showNotification()}
@@ -1094,7 +1091,6 @@ SurveyEdit.propTypes = {
   setBranch: PropTypes.func.isRequired
 };
 function mapStateToProps(state) {
-  console.log("state", state);
   return {
     currentSurvey: state.surveys.currentSurvey,
     questions: state.surveys.questions,
