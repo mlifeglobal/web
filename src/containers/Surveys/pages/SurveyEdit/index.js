@@ -204,7 +204,11 @@ export class SurveyEdit extends React.PureComponent {
       // }
       // this.props.uploadAttachment(data);
     }
-    this.setState({ editQuestion: false, notification: true });
+    this.setState({
+      editQuestion: false,
+      notification: true,
+      predefAnswers: []
+    });
   };
 
   submitDeleteQuestion = questionId => {
@@ -237,7 +241,7 @@ export class SurveyEdit extends React.PureComponent {
 
   onChangeAnswer = ({ target }) => {
     const predefAnswers = this.state.predefAnswers.slice();
-    predefAnswers[target.id] = { value: target.value };
+    predefAnswers[target.id - 1] = { value: target.value };
     this.setState({ predefAnswers });
   };
   handleFileUpload = ({ target }) => {
@@ -875,9 +879,12 @@ export class SurveyEdit extends React.PureComponent {
                       />
                     </FormField>
 
-                    {Object.keys(predefAnswers).map(item => (
-                      <FormField label={`Option ${item}`}>
-                        <TextInput id={item} onChange={this.onChangeAnswer} />
+                    {predefAnswers.map((item, index) => (
+                      <FormField label={`Option ${index + 1}`}>
+                        <TextInput
+                          id={index + 1}
+                          onChange={this.onChangeAnswer}
+                        />
                       </FormField>
                     ))}
 
