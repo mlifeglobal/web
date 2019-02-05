@@ -14,8 +14,8 @@ import {
   Trash,
   StatusGood,
   FormClose,
-  Down,
-  Up
+  FormUp,
+  FormDown
 } from "grommet-icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -100,7 +100,7 @@ export class SurveyEdit extends React.PureComponent {
       alert("You have to unpublish survey first to make changes");
     } else {
       let branchingOptions = [];
-      this.props.questions.map(question => {
+      this.props.questions.forEach(question => {
         branchingOptions.push({ label: question.question, value: question.id });
       });
       this.setState({
@@ -181,7 +181,7 @@ export class SurveyEdit extends React.PureComponent {
 
   submitEditQuestion = () => {
     const predefAnswers = this.state.predefAnswers.slice();
-    const { question, select, file, questionId, answerType } = this.state;
+    const { question, select, questionId, answerType } = this.state;
     if (select.value !== "file") {
       const data = {
         questionId,
@@ -193,16 +193,6 @@ export class SurveyEdit extends React.PureComponent {
       };
 
       this.props.updateQuestion(data);
-    } else {
-      let data = new FormData();
-      // data.append("file", file);
-      // data.append("text", question);
-      // data.append("surveyId", this.props.currentSurvey.id);
-      // console.log("data1", data);
-      // for (var pair of data.entries()) {
-      //   console.log(pair[0] + ", " + pair[1]);
-      // }
-      // this.props.uploadAttachment(data);
     }
     this.setState({
       editQuestion: false,
@@ -261,7 +251,7 @@ export class SurveyEdit extends React.PureComponent {
       state: this.props.currentSurvey.state
     };
     if (this.props.currentSurvey.state !== "in_progress") {
-      if (this.props.currentSurvey.questionsCount == 0) {
+      if (this.props.currentSurvey.questionsCount === 0) {
         alert("Survey is empty. Please add question before publishing.");
       } else if (this.props.currentSurvey.platforms.length === 0) {
         alert("Please set publishing platforms.");
@@ -400,16 +390,15 @@ export class SurveyEdit extends React.PureComponent {
     let body = (
       <Box direction="row" fill>
         <Box width="80%" align="start" justify="center">
-          <Text>
-            <Anchor
-              key={question.id}
-              onClick={() => {
-                this.editQuestion(question);
-              }}
-            >
-              {question.question}
-            </Anchor>
-          </Text>
+          <Anchor
+            key={question.id}
+            color="charcoal"
+            onClick={() => {
+              this.editQuestion(question);
+            }}
+          >
+            {question.question}
+          </Anchor>
         </Box>
         <Box justify="center" align="end" fill="horizontal">
           <Button
@@ -421,19 +410,18 @@ export class SurveyEdit extends React.PureComponent {
     );
     if (question.type === "mcq") {
       body = (
-        <Box gap="small">
-          <Box direction="row" fill>
+        <Box>
+          <Box direction="row" fill="horizontal">
             <Box width="80%" align="start" justify="center">
-              <Text>
-                <Anchor
-                  key={question.id}
-                  onClick={() => {
-                    this.editQuestion(question);
-                  }}
-                >
-                  {question.question}
-                </Anchor>
-              </Text>
+              <Anchor
+                key={question.id}
+                color="charcoal"
+                onClick={() => {
+                  this.editQuestion(question);
+                }}
+              >
+                {question.question}
+              </Anchor>
             </Box>
             <Box justify="center" align="end" fill="horizontal">
               <Button
@@ -446,13 +434,12 @@ export class SurveyEdit extends React.PureComponent {
             {Object.keys(question.answers).map(key => (
               <Anchor
                 key={question.answers[key].id}
+                color="charcoal"
                 onClick={() => {
                   this.openBranchModal(question.answers[key]);
                 }}
               >
-                <Text>
-                  {key}: {question.answers[key].value}
-                </Text>
+                {key}: {question.answers[key].value}
               </Anchor>
             ))}
           </Box>
@@ -463,18 +450,23 @@ export class SurveyEdit extends React.PureComponent {
   }
   renderQuestions() {
     return this.props.questions.map((question, index) => (
-      <Box direction="row" fill key={question.id}>
-        <Box align="start" fill="vertical">
-          <Button icon={<Up />} onClick={() => this.changeOrder(index, "up")} />
-
+      <Box direction="row" key={question.id}>
+        <Box justify="center">
           <Button
-            icon={<Down />}
+            icon={<FormUp />}
+            onClick={() => this.changeOrder(index, "up")}
+          />
+          <Text margin={{ top: "-15px", bottom: "-10px" }} alignSelf="center">
+            Q{index + 1}
+          </Text>
+          <Button
+            icon={<FormDown />}
             onClick={() => this.changeOrder(index, "down")}
           />
         </Box>
         <Box
           gap="medium"
-          pad={{ horizontal: "small", vertical: "small" }}
+          pad="small"
           margin="small"
           fill="horizontal"
           round="small"
@@ -827,7 +819,7 @@ export class SurveyEdit extends React.PureComponent {
             </Box>
             {this.renderSurveyDetails()}
           </Tab>
-          <Tab title="Question">
+          <Tab title="Questions">
             <Box justify="center" align="end" margin="medium">
               <Button
                 primary
@@ -1097,6 +1089,7 @@ SurveyEdit.propTypes = {
   getBranchingData: PropTypes.func.isRequired,
   setBranch: PropTypes.func.isRequired
 };
+
 function mapStateToProps(state) {
   return {
     currentSurvey: state.surveys.currentSurvey,
@@ -1105,7 +1098,6 @@ function mapStateToProps(state) {
     branchData: state.surveys.branchData
   };
 }
-
 function mapDispatchToProps(dispatch) {
   return {
     toggleState: data => dispatch(toggleState(data)),

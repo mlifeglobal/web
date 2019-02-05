@@ -37,7 +37,6 @@ import {
   setBranchWatcher,
   changeOrderWatcher
 } from "containers/Surveys/state/sagas";
-import { fetchDataWatcher } from "containers/DataPoints/state/sagas";
 import { sendBulkMsgWatcher } from "containers/BulkMsg/state/sagas";
 
 export default sagaMiddleware => {
@@ -66,9 +65,6 @@ export default sagaMiddleware => {
   sagaMiddleware.run(optInSucceedWatcher);
   sagaMiddleware.run(startSurveyWatcher);
   sagaMiddleware.run(saveAnswerWatcher);
-
-  // DataPoints
-  sagaMiddleware.run(fetchDataWatcher);
 
   // Bulk Messaging
   sagaMiddleware.run(sendBulkMsgWatcher);
