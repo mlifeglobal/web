@@ -496,7 +496,7 @@ export class SurveyEdit extends React.PureComponent {
           introString: Yup.string().required("Required"),
           completionString: Yup.string().required("Required"),
           incentive: Yup.number()
-            .positive("Positive number only")
+            .min(0)
             .required("Required")
         })}
         onSubmit={this.submitChangeDetails}
