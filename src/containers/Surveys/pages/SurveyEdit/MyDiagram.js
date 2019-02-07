@@ -45,6 +45,7 @@ class MyDiagram extends React.Component {
     const $ = go.GraphObject.make;
 
     const myDiagram = $(go.Diagram, diagramId, {
+      initialAutoScale: go.Diagram.Uniform,
       initialContentAlignment: go.Spot.LeftCenter,
       layout: $(go.TreeLayout, {
         angle: 0,
@@ -56,8 +57,10 @@ class MyDiagram extends React.Component {
       allowVerticalScroll: true,
       allowZoom: true,
       allowSelect: false,
-      autoScale: Diagram.Uniform,
-      contentAlignment: go.Spot.LeftCenter
+      autoScale: Diagram.None,
+      contentAlignment: go.Spot.LeftCenter,
+      hasHorizontalScrollbar: true
+
       //   TextEdited: this.onTextEdited
     });
 

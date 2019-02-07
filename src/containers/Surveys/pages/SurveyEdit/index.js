@@ -70,7 +70,8 @@ export class SurveyEdit extends React.PureComponent {
       currentQuestion: undefined,
       notification: undefined,
       showBranch: undefined,
-      branchModal: false
+      branchModal: false,
+      answerType: { label: "Single", value: "single" }
     };
   }
 
@@ -95,18 +96,37 @@ export class SurveyEdit extends React.PureComponent {
     }
   };
 
-  openBranchModal = selectedPredef => {
+  openBranchModal = (selectedPredef, index) => {
     if (this.props.currentSurvey.state === "in_progress") {
       alert("You have to unpublish survey first to make changes");
     } else {
+      let select = [];
+      let skipQuestions = selectedPredef.skipQuestions;
       let branchingOptions = [];
-      this.props.questions.forEach(question => {
-        branchingOptions.push({ label: question.question, value: question.id });
+      index++;
+      let questions =
+        index === this.props.questions.length
+          ? []
+          : this.props.questions.slice(index);
+      questions.forEach(question => {
+        index++;
+        if (skipQuestions.includes(question.id)) {
+          select.push({
+            label: "Q" + index + ":" + question.question,
+            value: question.id
+          });
+        } else {
+          branchingOptions.push({
+            label: "Q" + index + ":" + question.question,
+            value: question.id
+          });
+        }
       });
       this.setState({
         branchModal: true,
         selectedPredef,
-        branchingOptions
+        branchingOptions,
+        select
       });
     }
   };
@@ -119,7 +139,12 @@ export class SurveyEdit extends React.PureComponent {
 
   submitSetBranch = () => {
     const { selectedPredef, select } = this.state;
-    const data = { predefinedAnswerId: selectedPredef.id, questions: select };
+
+    const data = {
+      predefinedAnswerId: selectedPredef.id,
+      questions: select,
+      surveyId: this.props.currentSurvey.id
+    };
     this.props.setBranch(data);
     this.setState({ notification: true, branchModal: false, select: "" });
   };
@@ -175,7 +200,7 @@ export class SurveyEdit extends React.PureComponent {
       notification: true,
       predefAnswers: [],
       select: "",
-      answerType: ""
+      answerType: { label: "Single", value: "single" }
     });
   };
 
@@ -386,7 +411,7 @@ export class SurveyEdit extends React.PureComponent {
     this.props.fetchQuestions(data);
   }
 
-  renderQuestion(question) {
+  renderQuestion(question, index) {
     let body = (
       <Box direction="row" fill>
         <Box width="80%" align="start" justify="center">
@@ -436,7 +461,7 @@ export class SurveyEdit extends React.PureComponent {
                 key={question.answers[key].id}
                 color="charcoal"
                 onClick={() => {
-                  this.openBranchModal(question.answers[key]);
+                  this.openBranchModal(question.answers[key], index);
                 }}
               >
                 {key}: {question.answers[key].value}
@@ -474,7 +499,7 @@ export class SurveyEdit extends React.PureComponent {
           elevation="small"
           background={{ color: "white" }}
         >
-          {this.renderQuestion(question)}
+          {this.renderQuestion(question, index)}
         </Box>
       </Box>
     ));
@@ -976,7 +1001,7 @@ export class SurveyEdit extends React.PureComponent {
               >
                 <Box margin="medium">
                   <Heading level={2} margin="medium">
-                    Set branch for {selectedPredef.value}
+                    Select questions to skip for '{selectedPredef.value}'
                   </Heading>
                   <Select
                     closeMenuOnSelect={false}

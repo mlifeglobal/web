@@ -101,6 +101,7 @@ function surveysReducer(state = initialState, action) {
       return {
         ...state,
         loading: false,
+        questions: action.payload.questions,
         message: action.payload.message
       };
     case `${QUESTION_CHANGE_ORDER}_SUCCEED`:
