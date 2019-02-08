@@ -9,11 +9,22 @@ const API_ROOT =
 
 const client = axios.create({ baseURL: API_ROOT });
 
-const request = async (method = "post", url, params, config) => {
+const request = async (method = "post", url, params, config, file = false) => {
   try {
-    const { data } = await client[method](url, params, config);
+    console.log(config);
+    if (file) {
+      const { data } = await axios({
+        method: "post",
+        url: `${API_ROOT}/${url}`,
+        data: params,
+        config
+      });
+      return { payload: data };
+    } else {
+      const { data } = await client[method](url, params, config);
 
-    return { payload: data };
+      return { payload: data };
+    }
   } catch (error) {
     if (error.response) {
       const {
@@ -30,9 +41,16 @@ const request = async (method = "post", url, params, config) => {
   }
 };
 
-export const requestApi = (url, params = {}, meta = {}, method, config) => ({
+export const requestApi = (
+  url,
+  params = {},
+  meta = {},
+  method,
+  config,
+  file = false
+) => ({
   meta,
-  payload: { config, method, params, url },
+  payload: { config, method, params, url, file },
   type: API_REQUEST
 });
 
@@ -40,7 +58,7 @@ export const requestApi = (url, params = {}, meta = {}, method, config) => ({
 export default function* requestApiWatcher() {
   yield takeEvery(API_REQUEST, function*({
     meta,
-    payload: { config = {}, method, params, url }
+    payload: { config = {}, method, params, url, file }
   }) {
     const { headers = {} } = config;
 
@@ -53,7 +71,14 @@ export default function* requestApiWatcher() {
       config.headers = { ...headers, authorization: `Bearer ${jwt}` };
     }
 
-    const { payload, error } = yield call(request, method, url, params, config);
+    const { payload, error } = yield call(
+      request,
+      method,
+      url,
+      params,
+      config,
+      file
+    );
 
     let errorContent = {};
     if (error) {

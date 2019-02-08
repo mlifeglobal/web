@@ -3,7 +3,7 @@
  * SurveyEdit
  *
  */
-
+import axios from "axios";
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -133,7 +133,8 @@ export class SurveyEdit extends React.PureComponent {
 
   closeBranchModal = () => {
     this.setState({
-      branchModal: false
+      branchModal: false,
+      select: ""
     });
   };
 

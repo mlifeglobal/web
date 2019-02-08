@@ -128,9 +128,16 @@ export function* updateQuestionWatcher() {
 
 export function* uploadAttachment(data) {
   yield put(
-    requestApi(UPLOAD_ATTACHMENT, { data }, {}, "post", {
-      headers: { "Content-Type": "multipart/form-data" }
-    })
+    requestApi(
+      UPLOAD_ATTACHMENT,
+      data,
+      {},
+      "post",
+      {
+        headers: { "Content-Type": "multipart/form-data" }
+      },
+      true
+    )
   );
 }
 

@@ -11,7 +11,8 @@ import {
   UPDATE_PLATFORMS,
   DELETE_QUESTION,
   SET_BRANCH,
-  QUESTION_CHANGE_ORDER
+  QUESTION_CHANGE_ORDER,
+  UPLOAD_ATTACHMENT
 } from "./constants";
 
 export const initialState = {
@@ -98,6 +99,13 @@ function surveysReducer(state = initialState, action) {
         currentSurvey: action.payload.survey
       };
     case `${SET_BRANCH}_SUCCEED`:
+      return {
+        ...state,
+        loading: false,
+        questions: action.payload.questions,
+        message: action.payload.message
+      };
+    case `${UPLOAD_ATTACHMENT}_SUCCEED`:
       return {
         ...state,
         loading: false,
