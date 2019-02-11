@@ -15,7 +15,8 @@ import {
   StatusGood,
   FormClose,
   FormUp,
-  FormDown
+  FormDown,
+  Attachment
 } from "grommet-icons";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -36,7 +37,8 @@ import {
   Layer,
   CheckBox,
   Anchor,
-  Form
+  Form,
+  Image
 } from "grommet";
 
 import {
@@ -70,6 +72,7 @@ export class SurveyEdit extends React.PureComponent {
       currentQuestion: undefined,
       notification: undefined,
       showBranch: undefined,
+      attachmentModal: undefined,
       branchModal: false,
       answerType: { label: "Single", value: "single" }
     };
@@ -177,7 +180,7 @@ export class SurveyEdit extends React.PureComponent {
   submitAddQuestion = () => {
     const predefAnswers = this.state.predefAnswers.slice();
     const { question, select, file, answerType } = this.state;
-    if (select.value !== "file") {
+    if (!file) {
       const data = {
         surveyId: this.props.currentSurvey.id,
         question,
@@ -192,11 +195,14 @@ export class SurveyEdit extends React.PureComponent {
       data.append("file", file);
       data.append("text", question);
       data.append("surveyId", this.props.currentSurvey.id);
-
+      data.append("questionType", select.value);
+      data.append("predefAnswers", JSON.stringify(predefAnswers));
+      data.append("answerType", answerType.value);
       this.props.uploadAttachment(data);
     }
 
     this.setState({
+      file: undefined,
       open: false,
       notification: true,
       predefAnswers: [],
@@ -291,14 +297,20 @@ export class SurveyEdit extends React.PureComponent {
     }
   }
 
+  showAttachment = question => {
+    this.setState({
+      attachmentModal: true,
+      attachmentKey: question.attachmentKey
+    });
+  };
+
   editQuestion = question => {
     if (this.props.currentSurvey.state === "in_progress") {
       alert("You have to unpublish survey first to make changes");
     } else {
       const options = {
         mcq: "Multiple Choice",
-        open: "Open question",
-        file: "File"
+        open: "Open question"
       };
 
       const answerOptions = { multiple: "Multiple", single: "Single" };
@@ -413,24 +425,36 @@ export class SurveyEdit extends React.PureComponent {
   }
 
   renderQuestion(question, index) {
+    let image = null;
+    if (question.attachmentKey) {
+      image = (
+        <Button
+          icon={<Attachment />}
+          onClick={() => this.showAttachment(question)}
+        />
+      );
+    }
     let body = (
-      <Box direction="row" fill>
-        <Box width="80%" align="start" justify="center">
-          <Anchor
-            key={question.id}
-            color="charcoal"
-            onClick={() => {
-              this.editQuestion(question);
-            }}
-          >
-            {question.question}
-          </Anchor>
-        </Box>
-        <Box justify="center" align="end" fill="horizontal">
-          <Button
-            icon={<Trash />}
-            onClick={() => this.submitDeleteQuestion(question.id)}
-          />
+      <Box>
+        <Box direction="row" fill>
+          <Box width="80%" align="start" justify="center">
+            <Anchor
+              key={question.id}
+              color="charcoal"
+              onClick={() => {
+                this.editQuestion(question);
+              }}
+            >
+              {question.question}
+            </Anchor>
+          </Box>
+          <Box justify="center" align="end" fill="horizontal">
+            <Button
+              icon={<Trash />}
+              onClick={() => this.submitDeleteQuestion(question.id)}
+            />
+            {image}
+          </Box>
         </Box>
       </Box>
     );
@@ -454,6 +478,7 @@ export class SurveyEdit extends React.PureComponent {
                 icon={<Trash />}
                 onClick={() => this.submitDeleteQuestion(question.id)}
               />
+              {image}
             </Box>
           </Box>
           <Box>
@@ -475,6 +500,7 @@ export class SurveyEdit extends React.PureComponent {
     return body;
   }
   renderQuestions() {
+    console.log("questions", this.props.questions);
     return this.props.questions.map((question, index) => (
       <Box direction="row" key={question.id}>
         <Box justify="center">
@@ -764,7 +790,9 @@ export class SurveyEdit extends React.PureComponent {
       branchingOptions,
       answerType,
       initCodes,
-      optInCodes
+      optInCodes,
+      attachmentModal,
+      attachmentKey
     } = this.state;
     const options = [
       { label: "Multiple Choice", value: "mcq" },
@@ -777,21 +805,12 @@ export class SurveyEdit extends React.PureComponent {
       { label: "Single", value: "single" }
     ];
     let addOptionButton = "";
-    let uploadFileButton = "";
     if (questionType === "mcq") {
       addOptionButton = (
         <Button type="submit" label="Add Option" onClick={this.addAnswer} />
       );
     }
-    if (questionType === "file") {
-      uploadFileButton = (
-        <input
-          type="file"
-          label="Upload File"
-          onChange={this.handleFileUpload}
-        />
-      );
-    }
+
     return (
       <Box fill>
         <Tabs flex activeIndex={index} onActive={this.onActive}>
@@ -907,7 +926,13 @@ export class SurveyEdit extends React.PureComponent {
                     ))}
 
                     {addOptionButton}
-                    {uploadFileButton}
+                    <Box margin={{ top: "small" }}>
+                      <input
+                        type="file"
+                        label="Upload File"
+                        onChange={this.handleFileUpload}
+                      />
+                    </Box>
                   </Box>
                   <Box flex={false} as="footer" align="start">
                     <Button
@@ -977,7 +1002,11 @@ export class SurveyEdit extends React.PureComponent {
                     ))}
 
                     {addOptionButton}
-                    {uploadFileButton}
+                    <input
+                      type="file"
+                      label="Upload File"
+                      onChange={this.handleFileUpload}
+                    />
                   </Box>
                   <Box flex={false} as="footer" align="start">
                     <Button
@@ -987,6 +1016,28 @@ export class SurveyEdit extends React.PureComponent {
                       primary
                     />
                   </Box>
+                </Box>
+              </Layer>
+            )}
+            {attachmentModal && (
+              <Layer
+                position="center"
+                modal
+                onClickOutside={() => {
+                  this.setState({
+                    attachmentModal: undefined,
+                    attachmentKey: undefined
+                  });
+                }}
+                onEsc={() => {
+                  this.setState({
+                    attachmentModal: undefined,
+                    attachmentKey: undefined
+                  });
+                }}
+              >
+                <Box height="small" width="small">
+                  <Image fit="cover" src={attachmentKey} />
                 </Box>
               </Layer>
             )}

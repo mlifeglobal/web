@@ -11,7 +11,6 @@ const client = axios.create({ baseURL: API_ROOT });
 
 const request = async (method = "post", url, params, config, file = false) => {
   try {
-    console.log(config);
     if (file) {
       const { data } = await axios({
         method: "post",
