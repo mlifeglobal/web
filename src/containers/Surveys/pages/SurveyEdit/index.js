@@ -161,7 +161,8 @@ export class SurveyEdit extends React.PureComponent {
     });
   };
 
-  notificationClose = () => this.setState({ notification: undefined });
+  notificationClose = () =>
+    this.setState({ notification: undefined, message: undefined });
 
   onSelect = option => {
     this.setState({ select: option });
@@ -303,7 +304,16 @@ export class SurveyEdit extends React.PureComponent {
       attachmentKey: question.attachmentKey
     });
   };
+  getSkipData = (question, key) => {
+    let questions = this.props.questions;
+    let skipQuestions = question.answers[key].skipQuestions;
+    let skipVal = [];
+    for (var questionId of skipQuestions) {
+      skipVal.push(`Q:${questions.map(e => e.id).indexOf(questionId) + 1}`);
+    }
 
+    return skipVal.length ? `     (Skips [${skipVal}] )` : "";
+  };
   editQuestion = question => {
     if (this.props.currentSurvey.state === "in_progress") {
       alert("You have to unpublish survey first to make changes");
@@ -491,6 +501,7 @@ export class SurveyEdit extends React.PureComponent {
                 }}
               >
                 {key}: {question.answers[key].value}
+                {this.getSkipData(question, key)}
               </Anchor>
             ))}
           </Box>
@@ -500,7 +511,6 @@ export class SurveyEdit extends React.PureComponent {
     return body;
   }
   renderQuestions() {
-    console.log("questions", this.props.questions);
     return this.props.questions.map((question, index) => (
       <Box direction="row" key={question.id}>
         <Box justify="center">
@@ -805,9 +815,20 @@ export class SurveyEdit extends React.PureComponent {
       { label: "Single", value: "single" }
     ];
     let addOptionButton = "";
+    let showAnswerType = "";
     if (questionType === "mcq") {
       addOptionButton = (
         <Button type="submit" label="Add Option" onClick={this.addAnswer} />
+      );
+      showAnswerType = (
+        <FormField label="Select answer type">
+          <Select
+            options={answerOptions}
+            value={answerType}
+            onSearch={() => {}}
+            onChange={option => this.onSelectAnswer(option)}
+          />
+        </FormField>
       );
     }
 
@@ -907,14 +928,7 @@ export class SurveyEdit extends React.PureComponent {
                       />
                     </FormField>
 
-                    <FormField label="Select answer type">
-                      <Select
-                        options={answerOptions}
-                        value={answerType}
-                        onSearch={() => {}}
-                        onChange={option => this.onSelectAnswer(option)}
-                      />
-                    </FormField>
+                    {showAnswerType}
 
                     {predefAnswers.map((item, index) => (
                       <FormField label={`Option ${index + 1}`}>
