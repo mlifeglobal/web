@@ -22,6 +22,7 @@ import * as Yup from "yup";
 import Select from "react-select";
 import MyDiagram from "./MyDiagram";
 import StyledForm from "components/StyledForm";
+import { push } from "connected-react-router";
 import FormErrorText from "components/FormErrorText";
 import {
   Box,
@@ -51,7 +52,8 @@ import {
   updateQuestion,
   getBranchingData,
   setBranch,
-  changeOrder
+  changeOrder,
+  deleteSurvey
 } from "../../state/actions";
 
 export class SurveyEdit extends React.PureComponent {
@@ -241,6 +243,11 @@ export class SurveyEdit extends React.PureComponent {
     this.setState({ notification: true });
   };
 
+  submitDeleteSurvey = () => {
+    const data = { surveyId: this.props.currentSurvey.id };
+    this.props.deleteSurvey(data);
+    this.props.changeRoute("/surveys");
+  };
   changeOrder = (index, action) => {
     const data = { surveyId: this.props.currentSurvey.id };
     if (action === "up") {
@@ -884,6 +891,14 @@ export class SurveyEdit extends React.PureComponent {
                   label="Branching view"
                 />
               </Box>
+              <Box justify="center" align="end">
+                <Button
+                  onClick={() => {
+                    this.submitDeleteSurvey();
+                  }}
+                  label="Delete Survey"
+                />
+              </Box>
             </Box>
             {this.renderSurveyDetails()}
           </Tab>
@@ -1183,7 +1198,8 @@ SurveyEdit.propTypes = {
   uploadAttachment: PropTypes.func.isRequired,
   updateQuestion: PropTypes.func.isRequired,
   getBranchingData: PropTypes.func.isRequired,
-  setBranch: PropTypes.func.isRequired
+  setBranch: PropTypes.func.isRequired,
+  deleteSurvey: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
@@ -1207,7 +1223,9 @@ function mapDispatchToProps(dispatch) {
     updateQuestion: data => dispatch(updateQuestion(data)),
     getBranchingData: data => dispatch(getBranchingData(data)),
     setBranch: data => dispatch(setBranch(data)),
-    changeOrder: data => dispatch(changeOrder(data))
+    changeOrder: data => dispatch(changeOrder(data)),
+    deleteSurvey: data => dispatch(deleteSurvey(data)),
+    changeRoute: route => dispatch(push(route))
   };
 }
 

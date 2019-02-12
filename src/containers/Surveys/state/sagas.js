@@ -14,7 +14,8 @@ import {
   UPDATE_QUESTION,
   GET_BRANCHING_DATA,
   SET_BRANCH,
-  QUESTION_CHANGE_ORDER
+  QUESTION_CHANGE_ORDER,
+  DELETE_SURVEY
 } from "./constants";
 
 export function* fetchSurveys(data) {
@@ -80,6 +81,14 @@ export function* deleteQuestionWatcher() {
   yield takeLatest(`${DELETE_QUESTION}_SUBMIT`, ({ data }) =>
     deleteQuestion(data)
   );
+}
+
+export function* deleteSurvey(data) {
+  yield put(requestApi(DELETE_SURVEY, { data }));
+}
+
+export function* deleteSurveyWatcher() {
+  yield takeLatest(`${DELETE_SURVEY}_SUBMIT`, ({ data }) => deleteSurvey(data));
 }
 
 export function* addQuestion(data) {

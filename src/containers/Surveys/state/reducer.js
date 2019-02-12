@@ -12,7 +12,8 @@ import {
   DELETE_QUESTION,
   SET_BRANCH,
   QUESTION_CHANGE_ORDER,
-  UPLOAD_ATTACHMENT
+  UPLOAD_ATTACHMENT,
+  DELETE_SURVEY
 } from "./constants";
 
 export const initialState = {
@@ -142,6 +143,25 @@ function surveysReducer(state = initialState, action) {
         requestSucceed: true
       };
     case `${DELETE_QUESTION}_FAIL`:
+      return {
+        ...state,
+        loading: false,
+        message: "Unexpected error.",
+        requestSucceed: false
+      };
+    case `${DELETE_SURVEY}_SUBMIT`:
+      return {
+        ...state,
+        message: ""
+      };
+    case `${DELETE_SURVEY}_SUCCEED`:
+      return {
+        ...state,
+        loading: false,
+        message: action.payload.message,
+        requestSucceed: true
+      };
+    case `${DELETE_SURVEY}_FAIL`:
       return {
         ...state,
         loading: false,

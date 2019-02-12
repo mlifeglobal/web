@@ -13,7 +13,8 @@ import {
   UPDATE_QUESTION,
   GET_BRANCHING_DATA,
   SET_BRANCH,
-  QUESTION_CHANGE_ORDER
+  QUESTION_CHANGE_ORDER,
+  DELETE_SURVEY
 } from "./constants";
 
 export function fetchSurveys(data) {
@@ -60,6 +61,12 @@ export function fetchQuestions(data) {
 export function deleteQuestion(data) {
   return {
     type: `${DELETE_QUESTION}_SUBMIT`,
+    data
+  };
+}
+export function deleteSurvey(data) {
+  return {
+    type: `${DELETE_SURVEY}_SUBMIT`,
     data
   };
 }
