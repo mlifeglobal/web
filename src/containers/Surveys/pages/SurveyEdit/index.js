@@ -3,7 +3,6 @@
  * SurveyEdit
  *
  */
-import axios from "axios";
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -203,6 +202,7 @@ export class SurveyEdit extends React.PureComponent {
     }
 
     this.setState({
+      question: "",
       file: undefined,
       open: false,
       notification: true,
@@ -766,7 +766,9 @@ export class SurveyEdit extends React.PureComponent {
             round="medium"
             elevation="medium"
             pad={{ vertical: "xsmall", horizontal: "small" }}
-            background="status-ok"
+            background={
+              this.props.requestSucceed ? "status-ok" : "status-error"
+            }
           >
             <Box align="center" direction="row" gap="xsmall">
               <StatusGood />
@@ -951,6 +953,7 @@ export class SurveyEdit extends React.PureComponent {
                   <Box flex={false} as="footer" align="start">
                     <Button
                       type="submit"
+                      disabled={question === undefined}
                       label="Submit"
                       onClick={this.submitAddQuestion}
                       primary
@@ -1161,7 +1164,9 @@ export class SurveyEdit extends React.PureComponent {
             </Form>
           </Tab>
         </Tabs>
-        {notification && this.showNotification()}
+        {notification &&
+          this.props.message.length > 0 &&
+          this.showNotification()}
       </Box>
     );
   }
@@ -1186,7 +1191,8 @@ function mapStateToProps(state) {
     currentSurvey: state.surveys.currentSurvey,
     questions: state.surveys.questions,
     message: state.surveys.message,
-    branchData: state.surveys.branchData
+    branchData: state.surveys.branchData,
+    requestSucceed: state.surveys.requestSucceed
   };
 }
 function mapDispatchToProps(dispatch) {
