@@ -197,7 +197,7 @@ export class SurveyEdit extends React.PureComponent {
       data.append("file", file);
       data.append("text", question);
       data.append("surveyId", this.props.currentSurvey.id);
-      data.append("questionType", select.value);
+      data.append("questionType", select.value ? select.value : "open");
       data.append("predefAnswers", JSON.stringify(predefAnswers));
       data.append("answerType", answerType.value);
       this.props.uploadAttachment(data);
@@ -815,8 +815,7 @@ export class SurveyEdit extends React.PureComponent {
     } = this.state;
     const options = [
       { label: "Multiple Choice", value: "mcq" },
-      { label: "Open question", value: "open" },
-      { label: "File", value: "file" }
+      { label: "Open question", value: "open" }
     ];
 
     const answerOptions = [
