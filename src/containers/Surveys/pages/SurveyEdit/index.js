@@ -204,10 +204,11 @@ export class SurveyEdit extends React.PureComponent {
     }
 
     this.setState({
-      question: "",
+      question: undefined,
       file: undefined,
       open: false,
       notification: true,
+      questionType: "open",
       predefAnswers: [],
       select: "",
       answerType: { label: "Single", value: "single" }
@@ -1033,11 +1034,6 @@ export class SurveyEdit extends React.PureComponent {
                     ))}
 
                     {addOptionButton}
-                    <input
-                      type="file"
-                      label="Upload File"
-                      onChange={this.handleFileUpload}
-                    />
                   </Box>
                   <Box flex={false} as="footer" align="start">
                     <Button
