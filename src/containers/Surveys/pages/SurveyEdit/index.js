@@ -1014,14 +1014,7 @@ export class SurveyEdit extends React.PureComponent {
                       />
                     </FormField>
 
-                    <FormField label="Select answer type">
-                      <Select
-                        options={answerOptions}
-                        value={answerType}
-                        onSearch={() => {}}
-                        onChange={option => this.onSelectAnswer(option)}
-                      />
-                    </FormField>
+                    {showAnswerType}
 
                     {predefAnswers.map((item, index) => (
                       <FormField label={`Option ${index + 1}`}>
