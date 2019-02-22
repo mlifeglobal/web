@@ -103,7 +103,7 @@ export class SurveyList extends React.PureComponent {
             background="light-1"
             gap="xsmall"
           >
-            <Text>Survey</Text>
+            <Text>{`Survey ID${survey.id}`}</Text>
             <Text size="large" weight="bold">
               {survey.name}
             </Text>
